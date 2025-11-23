@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Payment - Arisegenius</title>
+    <meta name="description" content="Secure payment options for Arisegenius tires. Pay with Mobile Money, PayPal, or credit cards. Trusted payment processing across Africa.">
+    <meta name="keywords" content="mobile money payment, PayPal, credit card, secure payment, African payment methods">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Secure Payment - Arisegenius">
+    <meta property="og:description" content="Multiple secure payment options for your Arisegenius tire purchase.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://arisegenius.com/payment">
+    
+    <!-- Favicon and Icons -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="android-chrome-512x512.png">
+    
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="site.webmanifest">
+    
+    <!-- Theme Colors -->
+    <meta name="theme-color" content="#d78a00">
+    <meta name="msapplication-TileColor" content="#090101">
+    <meta name="msapplication-config" content="browserconfig.xml">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="payment.css">
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="index.html">
+                    <h1>ARISEGENIUS</h1>
+                </a>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="index.html#about" class="nav-link">About</a>
+                <a href="products.html" class="nav-link">Products</a>
+                <a href="index.html#technology" class="nav-link">Technology</a>
+                <a href="index.html#sustainability" class="nav-link">Sustainability</a>
+                <a href="index.html#news" class="nav-link">News</a>
+                <a href="index.html#contact" class="nav-link">Contact</a>
+                <a href="ventures.html" class="nav-link ventures-link">More Ventures</a>
+            </div>
+            <div class="nav-toggle" id="nav-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Payment Hero -->
+    <section class="payment-hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Secure Payment</h1>
+                <p>Choose your preferred payment method for a safe and convenient transaction</p>
+                <div class="security-badges">
+                    <div class="security-badge">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>SSL Secured</span>
+                    </div>
+                    <div class="security-badge">
+                        <i class="fas fa-lock"></i>
+                        <span>PCI Compliant</span>
+                    </div>
+                    <div class="security-badge">
+                        <i class="fas fa-user-shield"></i>
+                        <span>Data Protected</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Order Summary -->
+    <section class="order-summary">
+        <div class="container">
+            <div class="summary-content">
+                <h2>Order Summary</h2>
+                <div class="order-items">
+                    <div class="order-item">
+                        <div class="item-image">
+                            <div class="item-placeholder">
+                                <i class="fas fa-circle"></i>
+                            </div>
+                        </div>
+                        <div class="item-details">
+                            <h3>Arisegenius Comfort Pro</h3>
+                            <p>Size: 205/55R16</p>
+                            <p>Quantity: 4</p>
+                        </div>
+                        <div class="item-price">$480.00</div>
+                    </div>
+                </div>
+                
+                <div class="order-totals">
+                    <div class="total-row">
+                        <span>Subtotal:</span>
+                        <span>$480.00</span>
+                    </div>
+                    <div class="total-row">
+                        <span>Shipping:</span>
+                        <span>$25.00</span>
+                    </div>
+                    <div class="total-row">
+                        <span>Tax:</span>
+                        <span>$50.50</span>
+                    </div>
+                    <div class="total-row total-final">
+                        <span>Total:</span>
+                        <span>$555.50</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Payment Methods -->
+    <section class="payment-methods">
+        <div class="container">
+            <div class="payment-content">
+                <h2>Choose Payment Method</h2>
+                <p>Select your preferred payment option below</p>
+                
+                <div class="payment-options">
+                    <!-- Mobile Money -->
+                    <div class="payment-option" data-method="mobile-money">
+                        <div class="payment-header">
+                            <div class="payment-icon">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                            <div class="payment-info">
+                                <h3>Mobile Money</h3>
+                                <p>Pay with M-Pesa, Airtel Money, or other mobile wallets</p>
+                            </div>
+                            <div class="payment-radio">
+                                <input type="radio" name="payment-method" value="mobile-money" id="mobile-money">
+                                <label for="mobile-money"></label>
+                            </div>
+                        </div>
+                        
+                        <div class="payment-details" id="mobile-money-details">
+                            <div class="mobile-money-options">
+                                <div class="mobile-option">
+                                    <div class="mobile-logo">
+                                        <i class="fas fa-mobile-alt"></i>
+                                    </div>
+                                    <div class="mobile-info">
+                                        <h4>M-Pesa</h4>
+                                        <p>Kenya, Tanzania, Uganda</p>
+                                    </div>
+                                    <button class="select-mobile" data-provider="mpesa">Select</button>
+                                </div>
+                                
+                                <div class="mobile-option">
+                                    <div class="mobile-logo">
+                                        <i class="fas fa-mobile-alt"></i>
+                                    </div>
+                                    <div class="mobile-info">
+                                        <h4>Airtel Money</h4>
+                                        <p>Uganda, Tanzania, Kenya</p>
+                                    </div>
+                                    <button class="select-mobile" data-provider="airtel">Select</button>
+                                </div>
+                                
+                                <div class="mobile-option">
+                                    <div class="mobile-logo">
+                                        <i class="fas fa-mobile-alt"></i>
+                                    </div>
+                                    <div class="mobile-info">
+                                        <h4>MTN Mobile Money</h4>
+                                        <p>Uganda, Ghana, Rwanda</p>
+                                    </div>
+                                    <button class="select-mobile" data-provider="mtn">Select</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- PayPal -->
+                    <div class="payment-option" data-method="paypal">
+                        <div class="payment-header">
+                            <div class="payment-icon">
+                                <i class="fab fa-paypal"></i>
+                            </div>
+                            <div class="payment-info">
+                                <h3>PayPal</h3>
+                                <p>Pay securely with your PayPal account or credit card</p>
+                            </div>
+                            <div class="payment-radio">
+                                <input type="radio" name="payment-method" value="paypal" id="paypal">
+                                <label for="paypal"></label>
+                            </div>
+                        </div>
+                        
+                        <div class="payment-details" id="paypal-details">
+                            <div class="paypal-info">
+                                <div class="paypal-logo">
+                                    <i class="fab fa-paypal"></i>
+                                </div>
+                                <p>You will be redirected to PayPal to complete your payment securely.</p>
+                                <div class="paypal-features">
+                                    <div class="feature">
+                                        <i class="fas fa-check"></i>
+                                        <span>Buyer Protection</span>
+                                    </div>
+                                    <div class="feature">
+                                        <i class="fas fa-check"></i>
+                                        <span>No PayPal Account Required</span>
+                                    </div>
+                                    <div class="feature">
+                                        <i class="fas fa-check"></i>
+                                        <span>Instant Payment</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Credit Card -->
+                    <div class="payment-option" data-method="credit-card">
+                        <div class="payment-header">
+                            <div class="payment-icon">
+                                <i class="fas fa-credit-card"></i>
+                            </div>
+                            <div class="payment-info">
+                                <h3>Credit/Debit Card</h3>
+                                <p>Pay with Visa, Mastercard, or other major credit cards</p>
+                            </div>
+                            <div class="payment-radio">
+                                <input type="radio" name="payment-method" value="credit-card" id="credit-card">
+                                <label for="credit-card"></label>
+                            </div>
+                        </div>
+                        
+                        <div class="payment-details" id="credit-card-details">
+                            <form class="card-form" id="card-form">
+                                <div class="form-group">
+                                    <label for="card-number">Card Number</label>
+                                    <input type="text" id="card-number" name="cardNumber" placeholder="1234 5678 9012 3456" required>
+                                    <div class="card-icons">
+                                        <i class="fab fa-cc-visa"></i>
+                                        <i class="fab fa-cc-mastercard"></i>
+                                        <i class="fab fa-cc-amex"></i>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="expiry-date">Expiry Date</label>
+                                        <input type="text" id="expiry-date" name="expiryDate" placeholder="MM/YY" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="cvv">CVV</label>
+                                        <input type="text" id="cvv" name="cvv" placeholder="123" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="card-name">Cardholder Name</label>
+                                    <input type="text" id="card-name" name="cardName" placeholder="John Doe" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="billing-address">Billing Address</label>
+                                    <input type="text" id="billing-address" name="billingAddress" placeholder="123 Main Street, City, Country" required>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="payment-actions">
+                    <button class="btn-secondary" onclick="window.history.back()">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to Cart
+                    </button>
+                    <button class="btn-primary" id="proceed-payment" onclick="proceedPayment()">
+                        <i class="fas fa-lock"></i>
+                        Complete Payment
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Payment Processing -->
+    <section class="payment-processing" id="payment-processing" style="display: none;">
+        <div class="container">
+            <div class="processing-content">
+                <div class="processing-animation">
+                    <div class="spinner"></div>
+                </div>
+                <h2>Processing Payment</h2>
+                <p>Please wait while we process your payment securely...</p>
+                <div class="processing-steps">
+                    <div class="step active" id="step-1">
+                        <i class="fas fa-check"></i>
+                        <span>Validating Payment</span>
+                    </div>
+                    <div class="step" id="step-2">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <span>Processing Transaction</span>
+                    </div>
+                    <div class="step" id="step-3">
+                        <i class="fas fa-clock"></i>
+                        <span>Confirming Order</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Payment Success -->
+    <section class="payment-success" id="payment-success" style="display: none;">
+        <div class="container">
+            <div class="success-content">
+                <div class="success-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h2>Payment Successful!</h2>
+                <p>Your order has been confirmed and payment processed successfully.</p>
+                
+                <div class="order-details">
+                    <div class="detail-item">
+                        <span class="label">Order Number:</span>
+                        <span class="value">#AG-2024-001234</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Payment Method:</span>
+                        <span class="value" id="payment-method-used">Mobile Money</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Amount Paid:</span>
+                        <span class="value">$555.50</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Estimated Delivery:</span>
+                        <span class="value">3-5 business days</span>
+                    </div>
+                </div>
+                
+                <div class="success-actions">
+                    <button class="btn-primary" onclick="downloadReceipt()">
+                        <i class="fas fa-download"></i>
+                        Download Receipt
+                    </button>
+                    <button class="btn-secondary" onclick="trackOrder()">
+                        <i class="fas fa-truck"></i>
+                        Track Order
+                    </button>
+                    <button class="btn-secondary" onclick="window.location.href='index.html'">
+                        <i class="fas fa-home"></i>
+                        Back to Home
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>ARISEGENIUS</h3>
+                    <p>Leading African tire innovation with global standards of quality, safety, and performance.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Products</h4>
+                    <ul>
+                        <li><a href="products.html#passenger">Passenger Tires</a></li>
+                        <li><a href="products.html#performance">Performance Tires</a></li>
+                        <li><a href="products.html#truck">Truck & Bus</a></li>
+                        <li><a href="products.html#offroad">Off-Road</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="index.html#about">About Us</a></li>
+                        <li><a href="index.html#technology">Technology</a></li>
+                        <li><a href="index.html#sustainability">Sustainability</a></li>
+                        <li><a href="index.html#news">News & Media</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="index.html#contact">Contact Us</a></li>
+                        <li><a href="#dealer">Find a Dealer</a></li>
+                        <li><a href="#warranty">Warranty</a></li>
+                        <li><a href="#support">Customer Support</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <div class="footer-bottom-content">
+                    <p>&copy; 2024 Arisegenius. All rights reserved.</p>
+                    <div class="footer-links">
+                        <a href="#privacy">Privacy Policy</a>
+                        <a href="#terms">Terms of Service</a>
+                        <a href="#cookies">Cookie Policy</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+    <script src="payment.js"></script>
+</body>
+</html>

@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arisegenius - Leading African Tire Innovation</title>
+    <meta name="description" content="Arisegenius - Africa's premier tire manufacturer. Premium quality tires for passenger cars, performance vehicles, trucks, and commercial fleets. Innovation, safety, and durability.">
+    <meta name="keywords" content="African tires, best car tires, durable tires, performance tires, commercial tires, tire manufacturer Africa">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Arisegenius - Leading African Tire Innovation">
+    <meta property="og:description" content="Premium quality tires for all vehicles. Innovation, safety, and durability from Africa's leading tire manufacturer.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://arisegenius.com">
+    
+    <!-- Favicon and Icons -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="android-chrome-512x512.png">
+    
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="site.webmanifest">
+    
+    <!-- Theme Colors -->
+    <meta name="theme-color" content="#d78a00">
+    <meta name="msapplication-TileColor" content="#090101">
+    <meta name="msapplication-config" content="browserconfig.xml">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h1>ARISEGENIUS</h1>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="#home" class="nav-link">Home</a>
+                <a href="#about" class="nav-link">About</a>
+                <div class="nav-dropdown">
+                    <a href="#products" class="nav-link">Products <i class="fas fa-chevron-down"></i></a>
+                    <div class="dropdown-content">
+                        <a href="#passenger">Passenger Tires</a>
+                        <a href="#performance">Performance Tires</a>
+                        <a href="#truck">Truck & Bus</a>
+                        <a href="#offroad">Off-Road</a>
+                    </div>
+                </div>
+                <a href="#technology" class="nav-link">Technology</a>
+                <a href="#sustainability" class="nav-link">Sustainability</a>
+                <a href="#news" class="nav-link">News</a>
+                <a href="#contact" class="nav-link">Contact</a>
+                <a href="ventures.html" class="nav-link ventures-link">More Ventures</a>
+            </div>
+            <div class="nav-toggle" id="nav-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-video">
+            <video autoplay muted loop playsinline>
+                <source src="assets/videos/tire-spinning.mp4" type="video/mp4">
+                <!-- Fallback image if video doesn't load -->
+                <div class="hero-fallback"></div>
+            </video>
+        </div>
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">INNOVATION ON EVERY ROAD</h1>
+                <p class="hero-subtitle">Leading African tire technology that challenges global standards</p>
+                <button class="cta-button" onclick="scrollToTireFinder()">
+                    <span>Find Your Perfect Tire</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <div class="scroll-arrow"></div>
+        </div>
+    </section>
+
+    <!-- Tire Finder Section -->
+    <section id="tire-finder" class="tire-finder">
+        <div class="container">
+            <div class="section-header">
+                <h2>Find Your Perfect Tire</h2>
+                <p>Search by vehicle or tire size to find the ideal Arisegenius tire for your needs</p>
+            </div>
+            
+            <div class="finder-tabs">
+                <button class="tab-button active" data-tab="vehicle">Search by Vehicle</button>
+                <button class="tab-button" data-tab="size">Search by Tire Size</button>
+            </div>
+            
+            <div class="finder-content">
+                <!-- Vehicle Search -->
+                <div class="tab-content active" id="vehicle-search">
+                    <form class="search-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="make">Vehicle Make</label>
+                                <select id="make" name="make" required>
+                                    <option value="">Select Make</option>
+                                    <option value="toyota">Toyota</option>
+                                    <option value="honda">Honda</option>
+                                    <option value="ford">Ford</option>
+                                    <option value="nissan">Nissan</option>
+                                    <option value="bmw">BMW</option>
+                                    <option value="mercedes">Mercedes-Benz</option>
+                                    <option value="audi">Audi</option>
+                                    <option value="volkswagen">Volkswagen</option>
+                                    <option value="hyundai">Hyundai</option>
+                                    <option value="kia">Kia</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="model">Model</label>
+                                <select id="model" name="model" required>
+                                    <option value="">Select Model</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="year">Year</label>
+                                <select id="year" name="year" required>
+                                    <option value="">Select Year</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" class="search-button">
+                            <i class="fas fa-search"></i>
+                            Find Tires
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Size Search -->
+                <div class="tab-content" id="size-search">
+                    <form class="search-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="width">Width</label>
+                                <select id="width" name="width" required>
+                                    <option value="">Select Width</option>
+                                    <option value="175">175</option>
+                                    <option value="185">185</option>
+                                    <option value="195">195</option>
+                                    <option value="205">205</option>
+                                    <option value="215">215</option>
+                                    <option value="225">225</option>
+                                    <option value="235">235</option>
+                                    <option value="245">245</option>
+                                    <option value="255">255</option>
+                                    <option value="265">265</option>
+                                    <option value="275">275</option>
+                                    <option value="285">285</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="profile">Profile</label>
+                                <select id="profile" name="profile" required>
+                                    <option value="">Select Profile</option>
+                                    <option value="35">35</option>
+                                    <option value="40">40</option>
+                                    <option value="45">45</option>
+                                    <option value="50">50</option>
+                                    <option value="55">55</option>
+                                    <option value="60">60</option>
+                                    <option value="65">65</option>
+                                    <option value="70">70</option>
+                                    <option value="75">75</option>
+                                    <option value="80">80</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="rim">Rim Size</label>
+                                <select id="rim" name="rim" required>
+                                    <option value="">Select Rim</option>
+                                    <option value="13">13"</option>
+                                    <option value="14">14"</option>
+                                    <option value="15">15"</option>
+                                    <option value="16">16"</option>
+                                    <option value="17">17"</option>
+                                    <option value="18">18"</option>
+                                    <option value="19">19"</option>
+                                    <option value="20">20"</option>
+                                    <option value="21">21"</option>
+                                    <option value="22">22"</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" class="search-button">
+                            <i class="fas fa-search"></i>
+                            Find Tires
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="search-results" id="search-results">
+                <!-- Results will be populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- African Leader Parallax Section -->
+    <section class="parallax-section">
+        <div class="parallax-bg" data-speed="0.5">
+            <div class="parallax-overlay"></div>
+        </div>
+        <div class="parallax-content">
+            <div class="container">
+                <h2>Leading African Roads</h2>
+                <h3>Challenging the World</h3>
+                <p>From the bustling streets of Lagos to the challenging terrains of the Sahara, Arisegenius tires deliver uncompromising performance across Africa's diverse landscapes.</p>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-number">15+</div>
+                        <div class="stat-label">African Countries</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">2M+</div>
+                        <div class="stat-label">Tires Sold</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">99.8%</div>
+                        <div class="stat-label">Quality Rating</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">24/7</div>
+                        <div class="stat-label">Support</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <div class="section-header">
+                <h2>About Arisegenius</h2>
+                <p>We design and manufacture premium tires that are engineered for Africa’s roads yet benchmarked against global standards.</p>
+            </div>
+            <div class="about-grid">
+                <div class="about-card">
+                    <h3>Our Mission</h3>
+                    <p>To deliver innovative, durable and safe mobility solutions that empower drivers, fleets and economies across the continent.</p>
+                    <ul>
+                        <li>Cutting-edge R&D centers in Lagos and Nairobi</li>
+                        <li>ISO-certified manufacturing processes</li>
+                        <li>Proactive quality assurance at every stage</li>
+                    </ul>
+                </div>
+                <div class="about-card">
+                    <h3>What We Deliver</h3>
+                    <p>From precision-engineered passenger tires to high-load commercial solutions, our range covers every journey.</p>
+                    <ul>
+                        <li>Passenger, SUV and crossover fitments</li>
+                        <li>High-performance and motorsport programs</li>
+                        <li>Commercial, fleet and off-highway solutions</li>
+                    </ul>
+                </div>
+                <div class="about-card">
+                    <h3>Customer Promise</h3>
+                    <p>Every Arisegenius product carries comprehensive warranties, responsive support and a growing dealer network.</p>
+                    <ul>
+                        <li>Road hazard coverage in 15 markets</li>
+                        <li>24/7 multilingual technical support</li>
+                        <li>Authorized installers in major African cities</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Preview Section -->
+    <section id="products" class="products-preview">
+        <div class="container">
+            <div class="section-header">
+                <h2>Our Product Range</h2>
+                <p>Engineered for every driving condition and vehicle type</p>
+            </div>
+            
+            <div class="products-grid">
+                <div class="product-card" data-category="passenger">
+                    <div class="product-image">
+                        <div class="product-placeholder">
+                            <i class="fas fa-car"></i>
+                        </div>
+                    </div>
+                    <div class="product-content">
+                        <h3>Passenger Tires</h3>
+                        <p>Comfort, safety, and fuel efficiency for everyday driving</p>
+                        <a href="#passenger" class="product-link">Explore Range <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                
+                <div class="product-card" data-category="performance">
+                    <div class="product-image">
+                        <div class="product-placeholder">
+                            <i class="fas fa-tachometer-alt"></i>
+                        </div>
+                    </div>
+                    <div class="product-content">
+                        <h3>Performance Tires</h3>
+                        <p>High-speed stability and precision handling for sports cars</p>
+                        <a href="#performance" class="product-link">Explore Range <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                
+                <div class="product-card" data-category="truck">
+                    <div class="product-image">
+                        <div class="product-placeholder">
+                            <i class="fas fa-truck"></i>
+                        </div>
+                    </div>
+                    <div class="product-content">
+                        <h3>Truck & Bus</h3>
+                        <p>Heavy-duty reliability for commercial and fleet vehicles</p>
+                        <a href="#truck" class="product-link">Explore Range <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                
+                <div class="product-card" data-category="offroad">
+                    <div class="product-image">
+                        <div class="product-placeholder">
+                            <i class="fas fa-mountain"></i>
+                        </div>
+                    </div>
+                    <div class="product-content">
+                        <h3>Off-Road</h3>
+                        <p>Maximum traction and durability for challenging terrains</p>
+                        <a href="#offroad" class="product-link">Explore Range <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technology Section -->
+    <section id="technology" class="technology">
+        <div class="container">
+            <div class="section-header">
+                <h2>Innovation & Technology</h2>
+                <p>Cutting-edge technology meets African engineering excellence</p>
+            </div>
+            
+            <div class="tech-grid">
+                <div class="tech-item">
+                    <div class="tech-icon">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <h3>Advanced Manufacturing</h3>
+                    <p>State-of-the-art production facilities with precision engineering and quality control systems.</p>
+                </div>
+                
+                <div class="tech-item">
+                    <div class="tech-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Safety Testing</h3>
+                    <p>Rigorous testing protocols ensure every tire meets the highest safety standards.</p>
+                </div>
+                
+                <div class="tech-item">
+                    <div class="tech-icon">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <h3>Sustainable Materials</h3>
+                    <p>Eco-friendly manufacturing processes and recyclable materials for a greener future.</p>
+                </div>
+                
+                <div class="tech-item">
+                    <div class="tech-icon">
+                        <i class="fas fa-microscope"></i>
+                    </div>
+                    <h3>R&D Excellence</h3>
+                    <p>Continuous research and development to stay ahead of industry trends and challenges.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sustainability Section -->
+    <section id="sustainability" class="sustainability">
+        <div class="container">
+            <div class="section-header">
+                <h2>Sustainability & Impact</h2>
+                <p>Responsible manufacturing practices that honor communities and protect the environment.</p>
+            </div>
+            <div class="sustainability-grid">
+                <div class="sustainability-card">
+                    <i class="fas fa-recycle"></i>
+                    <h3>Green Manufacturing</h3>
+                    <p>30% of our compounds use recycled or bio-based materials, reducing carbon emissions across the supply chain.</p>
+                </div>
+                <div class="sustainability-card">
+                    <i class="fas fa-solar-panel"></i>
+                    <h3>Renewable Energy</h3>
+                    <p>Solar micro-grids power core production lines, saving 1.2M kWh annually at our flagship plant.</p>
+                </div>
+                <div class="sustainability-card">
+                    <i class="fas fa-hands-helping"></i>
+                    <h3>Community Programs</h3>
+                    <p>Road safety clinics, technical scholarships, and dealer upskilling initiatives in 10 partner countries.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- News & Media Section -->
+    <section id="news" class="news">
+        <div class="container">
+            <div class="section-header">
+                <h2>News & Insights</h2>
+                <p>Stories from our innovation labs, dealer network, and impact projects.</p>
+            </div>
+            <div class="news-grid">
+                <article class="news-card">
+                    <div class="news-tag">Innovation</div>
+                    <h3>Smart Tread Sensors Launch</h3>
+                    <p>New IoT-enabled sensors feed live performance data to fleets, reducing downtime by up to 18%.</p>
+                    <a href="#" class="news-link">Read Story <i class="fas fa-arrow-right"></i></a>
+                </article>
+                <article class="news-card">
+                    <div class="news-tag">Manufacturing</div>
+                    <h3>Expanded Lagos Facility</h3>
+                    <p>Phase II doubles annual capacity while introducing advanced curing presses and AI-powered inspection.</p>
+                    <a href="#" class="news-link">Explore Update <i class="fas fa-arrow-right"></i></a>
+                </article>
+                <article class="news-card">
+                    <div class="news-tag">Community</div>
+                    <h3>Safe Roads Initiative</h3>
+                    <p>We deployed 120,000 reflective kits to commercial drivers across Ghana, Kenya, and South Africa.</p>
+                    <a href="#" class="news-link">See Impact <i class="fas fa-arrow-right"></i></a>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="contact-wrapper">
+                <div class="contact-info">
+                    <h2>Contact & Dealer Support</h2>
+                    <p>Our regional teams respond within one business day. Choose the channel that suits you best.</p>
+                    <div class="contact-details">
+                        <div class="detail">
+                            <i class="fas fa-phone"></i>
+                            <div>
+                                <h4>Call Us</h4>
+                                <p>+234 700 ARISE (Nigeria)</p>
+                                <p>+254 709 000 111 (Kenya)</p>
+                            </div>
+                        </div>
+                        <div class="detail" id="dealer">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div>
+                                <h4>Dealer Locator</h4>
+                                <p>Locate authorized installers and fleet partners in your city.</p>
+                            </div>
+                        </div>
+                        <div class="detail" id="support">
+                            <i class="fas fa-envelope-open-text"></i>
+                            <div>
+                                <h4>Support Desk</h4>
+                                <p>support@arisegenius.com</p>
+                                <p>Response time &lt; 6 hours</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="contact-form-card">
+                    <h3>Send a Message</h3>
+                    <form class="contact-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="contact-name">Full Name</label>
+                                <input type="text" id="contact-name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="contact-company">Company</label>
+                                <input type="text" id="contact-company" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="contact-email">Email</label>
+                                <input type="email" id="contact-email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="contact-phone">Phone</label>
+                                <input type="tel" id="contact-phone" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-topic">Topic</label>
+                            <select id="contact-topic">
+                                <option value="">Select Topic</option>
+                                <option value="dealers">Dealer Application</option>
+                                <option value="orders">Order Support</option>
+                                <option value="media">Media & PR</option>
+                                <option value="general">General Inquiry</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-message">Message</label>
+                            <textarea id="contact-message" rows="4" placeholder="Tell us how we can help..."></textarea>
+                        </div>
+                        <button type="submit" class="cta-button">
+                            <span>Submit Request</span>
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- B2B Portal Section -->
+    <section id="b2b" class="b2b-portal">
+        <div class="container">
+            <div class="b2b-content">
+                <div class="b2b-text">
+                    <h2>Partner with Arisegenius</h2>
+                    <p>Join our network of authorized dealers and fleet partners across Africa. Access wholesale pricing, exclusive products, and comprehensive support.</p>
+                    <div class="b2b-features">
+                        <div class="feature">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Wholesale Pricing</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-shipping-fast"></i>
+                            <span>Fast Delivery</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-headset"></i>
+                            <span>24/7 Support</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-certificate"></i>
+                            <span>Authorized Dealer</span>
+                        </div>
+                    </div>
+                    <div class="b2b-buttons">
+                        <button class="btn-primary">Dealer Login</button>
+                        <button class="btn-secondary">Apply to Become a Dealer</button>
+                    </div>
+                </div>
+                <div class="b2b-visual">
+                    <div class="b2b-placeholder">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>ARISEGENIUS</h3>
+                    <p>Leading African tire innovation with global standards of quality, safety, and performance.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Products</h4>
+                    <ul>
+                        <li><a href="#passenger">Passenger Tires</a></li>
+                        <li><a href="#performance">Performance Tires</a></li>
+                        <li><a href="#truck">Truck & Bus</a></li>
+                        <li><a href="#offroad">Off-Road</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#technology">Technology</a></li>
+                        <li><a href="#sustainability">Sustainability</a></li>
+                        <li><a href="#news">News & Media</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#contact">Contact Us</a></li>
+                        <li><a href="#dealer">Find a Dealer</a></li>
+                        <li><a href="#warranty">Warranty</a></li>
+                        <li><a href="#support">Customer Support</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <div class="footer-bottom-content">
+                    <p>&copy; 2024 Arisegenius. All rights reserved.</p>
+                    <div class="footer-links">
+                        <a href="#privacy">Privacy Policy</a>
+                        <a href="#terms">Terms of Service</a>
+                        <a href="#cookies">Cookie Policy</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>

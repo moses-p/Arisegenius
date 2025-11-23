@@ -1,0 +1,126 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: arisegenius-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: arisegenius_db
+      POSTGRES_USER: arisegenius_user
+      POSTGRES_PASSWORD: arisegenius_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - arisegenius-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U arisegenius_user -d arisegenius_db"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: arisegenius-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass arisegenius_redis_password
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - arisegenius-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Arisegenius Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: arisegenius-backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://arisegenius_user:arisegenius_password@postgres:5432/arisegenius_db?schema=public
+      REDIS_URL: redis://:arisegenius_redis_password@redis:6379
+      JWT_SECRET: your-super-secret-jwt-key-here
+      JWT_REFRESH_SECRET: your-super-secret-refresh-key-here
+      API_KEY: arisegenius-api-key-2024
+      SMTP_HOST: smtp.gmail.com
+      SMTP_PORT: 587
+      SMTP_USER: your-email@gmail.com
+      SMTP_PASS: your-app-password
+      FROM_EMAIL: noreply@arisegenius.com
+      STRIPE_SECRET_KEY: sk_test_your_stripe_secret_key
+      STRIPE_PUBLISHABLE_KEY: pk_test_your_stripe_publishable_key
+      STRIPE_WEBHOOK_SECRET: whsec_your_webhook_secret
+      MPESA_CONSUMER_KEY: your_mpesa_consumer_key
+      MPESA_CONSUMER_SECRET: your_mpesa_consumer_secret
+      MPESA_BUSINESS_SHORT_CODE: 174379
+      MPESA_PASSKEY: your_mpesa_passkey
+      MPESA_ENVIRONMENT: sandbox
+      AIRTEL_CLIENT_ID: your_airtel_client_id
+      AIRTEL_CLIENT_SECRET: your_airtel_client_secret
+      AIRTEL_MERCHANT_ID: your_airtel_merchant_id
+      AIRTEL_ENVIRONMENT: sandbox
+      MTN_SUBSCRIPTION_KEY: your_mtn_subscription_key
+      MTN_ENVIRONMENT: sandbox
+      GOOGLE_MAPS_API_KEY: your_google_maps_api_key
+      AWS_ACCESS_KEY_ID: your_aws_access_key
+      AWS_SECRET_ACCESS_KEY: your_aws_secret_key
+      AWS_REGION: us-east-1
+      AWS_S3_BUCKET: arisegenius-assets
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./uploads:/app/uploads
+      - ./logs:/app/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - arisegenius-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Arisegenius Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: arisegenius-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./ssl:/etc/nginx/ssl
+      - ./uploads:/var/www/uploads
+    depends_on:
+      - backend
+    networks:
+      - arisegenius-network
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  arisegenius-network:
+    driver: bridge

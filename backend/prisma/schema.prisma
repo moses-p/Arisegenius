@@ -1,0 +1,462 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User Management
+model User {
+  id                String    @id @default(cuid())
+  email             String    @unique
+  password          String
+  firstName         String
+  lastName          String
+  phone             String?
+  role              UserRole  @default(CUSTOMER)
+  isActive          Boolean   @default(true)
+  emailVerified     Boolean   @default(false)
+  emailVerificationToken String?
+  passwordResetToken String?
+  passwordResetExpires DateTime?
+  lastLogin         DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Relations
+  orders            Order[]
+  addresses         Address[]
+  dealerProfile     DealerProfile?
+  reviews           Review[]
+  wishlist          WishlistItem[]
+  blogPosts         BlogPost[]
+
+  @@map("users")
+}
+
+model DealerProfile {
+  id                String    @id @default(cuid())
+  userId            String    @unique
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  dealerId          String    @unique
+  companyName       String
+  contactPerson     String
+  businessLicense   String?
+  taxId             String?
+  location          String
+  country           String
+  city              String
+  address           String
+  phone             String
+  website           String?
+  yearsInBusiness   Int?
+  status            DealerStatus @default(PENDING)
+  approvedAt        DateTime?
+  approvedBy        String?
+  commissionRate    Float     @default(0.1)
+  creditLimit       Decimal   @default(0)
+  currentBalance    Decimal   @default(0)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Relations
+  orders            Order[]
+  inventory         DealerInventory[]
+
+  @@map("dealer_profiles")
+}
+
+model Address {
+  id                String    @id @default(cuid())
+  userId            String
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type              AddressType @default(BILLING)
+  firstName         String
+  lastName          String
+  company           String?
+  address1          String
+  address2          String?
+  city              String
+  state             String?
+  postalCode        String?
+  country           String
+  phone             String?
+  isDefault         Boolean   @default(false)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Relations
+  shippingOrders    Order[]   @relation("OrderShippingAddress")
+  billingOrders     Order[]   @relation("OrderBillingAddress")
+
+  @@map("addresses")
+}
+
+// Product Management
+model Category {
+  id                String    @id @default(cuid())
+  name              String    @unique
+  slug              String    @unique
+  description       String?
+  image             String?
+  parentId          String?
+  parent            Category? @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children          Category[] @relation("CategoryHierarchy")
+  isActive          Boolean   @default(true)
+  sortOrder         Int       @default(0)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Relations
+  products          Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  id                String    @id @default(cuid())
+  name              String
+  slug              String    @unique
+  description       String
+  shortDescription  String?
+  sku               String    @unique
+  categoryId        String
+  category          Category  @relation(fields: [categoryId], references: [id])
+  brand             String
+  model             String
+  size              String
+  width             Int
+  profile           Int
+  rimSize           Int
+  loadIndex         Int?
+  speedRating       String?
+  season            TireSeason
+  type              TireType
+  price             Decimal
+  costPrice         Decimal?
+  salePrice         Decimal?
+  stock             Int       @default(0)
+  minStock          Int       @default(0)
+  weight            Decimal?
+  dimensions        Json?
+  specifications    Json?
+  features          String[]
+  images            String[]
+  isActive          Boolean   @default(true)
+  isFeatured        Boolean   @default(false)
+  metaTitle         String?
+  metaDescription   String?
+  metaKeywords      String[]
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Relations
+  orderItems        OrderItem[]
+  reviews           Review[]
+  wishlistItems     WishlistItem[]
+  dealerInventory   DealerInventory[]
+
+  @@map("products")
+}
+
+model DealerInventory {
+  id                String    @id @default(cuid())
+  dealerId          String
+  dealer            DealerProfile @relation(fields: [dealerId], references: [id], onDelete: Cascade)
+  productId         String
+  product           Product   @relation(fields: [productId], references: [id])
+  stock             Int       @default(0)
+  reservedStock     Int       @default(0)
+  reorderLevel      Int       @default(0)
+  lastRestocked     DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@unique([dealerId, productId])
+  @@map("dealer_inventory")
+}
+
+// Order Management
+model Order {
+  id                String    @id @default(cuid())
+  orderNumber       String    @unique
+  userId            String
+  user              User      @relation(fields: [userId], references: [id])
+  dealerId          String?
+  dealer            DealerProfile? @relation(fields: [dealerId], references: [id])
+  status            OrderStatus @default(PENDING)
+  paymentStatus     PaymentStatus @default(PENDING)
+  shippingStatus    ShippingStatus @default(PENDING)
+  subtotal          Decimal
+  taxAmount         Decimal   @default(0)
+  shippingAmount    Decimal   @default(0)
+  discountAmount    Decimal   @default(0)
+  totalAmount       Decimal
+  currency          String    @default("USD")
+  notes             String?
+  shippingAddressId String?
+  shippingAddress   Address?  @relation("OrderShippingAddress", fields: [shippingAddressId], references: [id])
+  billingAddressId  String?
+  billingAddress    Address?  @relation("OrderBillingAddress", fields: [billingAddressId], references: [id])
+  paymentMethod     PaymentMethod?
+  paymentReference  String?
+  trackingNumber    String?
+  estimatedDelivery DateTime?
+  deliveredAt       DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Relations
+  items             OrderItem[]
+  payments          Payment[]
+  shipments         Shipment[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id                String    @id @default(cuid())
+  orderId           String
+  order             Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId         String
+  product           Product   @relation(fields: [productId], references: [id])
+  quantity          Int
+  unitPrice         Decimal
+  totalPrice        Decimal
+  createdAt         DateTime  @default(now())
+
+  @@map("order_items")
+}
+
+// Payment Management
+model Payment {
+  id                String    @id @default(cuid())
+  orderId           String
+  order             Order     @relation(fields: [orderId], references: [id])
+  amount            Decimal
+  currency          String    @default("USD")
+  method            PaymentMethod
+  status            PaymentStatus @default(PENDING)
+  provider          PaymentProvider
+  providerTransactionId String?
+  providerResponse  Json?
+  failureReason     String?
+  processedAt       DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@map("payments")
+}
+
+// Shipping Management
+model Shipment {
+  id                String    @id @default(cuid())
+  orderId           String
+  order             Order     @relation(fields: [orderId], references: [id])
+  trackingNumber    String    @unique
+  carrier           String
+  service           String?
+  status            ShippingStatus @default(PENDING)
+  estimatedDelivery DateTime?
+  actualDelivery    DateTime?
+  notes             String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@map("shipments")
+}
+
+// Reviews and Ratings
+model Review {
+  id                String    @id @default(cuid())
+  userId            String
+  user              User      @relation(fields: [userId], references: [id])
+  productId         String
+  product           Product   @relation(fields: [productId], references: [id])
+  rating            Int       // 1-5 stars
+  title             String?
+  comment           String?
+  isVerified        Boolean   @default(false)
+  isApproved        Boolean   @default(false)
+  helpfulCount      Int       @default(0)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@unique([userId, productId])
+  @@map("reviews")
+}
+
+// Wishlist
+model WishlistItem {
+  id                String    @id @default(cuid())
+  userId            String
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId         String
+  product           Product   @relation(fields: [productId], references: [id])
+  createdAt         DateTime  @default(now())
+
+  @@unique([userId, productId])
+  @@map("wishlist_items")
+}
+
+// Content Management
+model Page {
+  id                String    @id @default(cuid())
+  title             String
+  slug              String    @unique
+  content           String
+  excerpt           String?
+  status            PageStatus @default(DRAFT)
+  metaTitle         String?
+  metaDescription   String?
+  metaKeywords      String[]
+  publishedAt       DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@map("pages")
+}
+
+model BlogPost {
+  id                String    @id @default(cuid())
+  title             String
+  slug              String    @unique
+  content           String
+  excerpt           String?
+  featuredImage     String?
+  status            PostStatus @default(DRAFT)
+  authorId          String
+  author            User      @relation(fields: [authorId], references: [id])
+  publishedAt       DateTime?
+  views             Int       @default(0)
+  metaTitle         String?
+  metaDescription   String?
+  metaKeywords      String[]
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@map("blog_posts")
+}
+
+// System Configuration
+model Setting {
+  id                String    @id @default(cuid())
+  key               String    @unique
+  value             String
+  type              SettingType @default(STRING)
+  description       String?
+  isPublic          Boolean   @default(false)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@map("settings")
+}
+
+// Enums
+enum UserRole {
+  CUSTOMER
+  DEALER
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum DealerStatus {
+  PENDING
+  APPROVED
+  SUSPENDED
+  REJECTED
+}
+
+enum AddressType {
+  BILLING
+  SHIPPING
+}
+
+enum TireSeason {
+  ALL_SEASON
+  SUMMER
+  WINTER
+  PERFORMANCE
+}
+
+enum TireType {
+  PASSENGER
+  PERFORMANCE
+  TRUCK
+  OFF_ROAD
+  COMMERCIAL
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  CANCELLED
+  REFUNDED
+}
+
+enum ShippingStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  IN_TRANSIT
+  DELIVERED
+  FAILED
+  RETURNED
+}
+
+enum PaymentMethod {
+  CREDIT_CARD
+  DEBIT_CARD
+  PAYPAL
+  MPESA
+  AIRTEL_MONEY
+  MTN_MOBILE_MONEY
+  BANK_TRANSFER
+  CASH_ON_DELIVERY
+}
+
+enum PaymentProvider {
+  STRIPE
+  PAYPAL
+  MPESA
+  AIRTEL
+  MTN
+  BANK
+  CASH
+}
+
+enum PageStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum SettingType {
+  STRING
+  NUMBER
+  BOOLEAN
+  JSON
+}

@@ -1,0 +1,32 @@
+{
+  "name": "arisegenius-frontend",
+  "version": "1.0.0",
+  "description": "Arisegenius Frontend - Leading African Tire Innovation",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve . -p 3000",
+    "dev": "npx live-server --port=3000 --open=/index.html",
+    "build": "echo 'Frontend build completed'",
+    "test": "echo 'No tests specified'",
+    "lint": "echo 'No linting configured'"
+  },
+  "keywords": [
+    "arisegenius",
+    "tires",
+    "africa",
+    "automotive",
+    "frontend",
+    "website"
+  ],
+  "author": "Arisegenius",
+  "license": "PROPRIETARY",
+  "devDependencies": {
+    "live-server": "^1.2.2",
+    "serve": "^14.2.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/arisegenius/arisegenius-frontend"
+  },
+  "homepage": "https://arisegenius.com"
+}

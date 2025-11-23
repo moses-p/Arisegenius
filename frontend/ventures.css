@@ -1,0 +1,761 @@
+/* Ventures Page Specific Styles */
+
+/* Hero Section */
+.ventures-hero {
+    height: 100vh;
+    background: linear-gradient(135deg, var(--primary-black) 0%, var(--secondary-gray) 100%);
+    position: relative;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+
+.ventures-hero .hero-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+}
+
+.ventures-hero .hero-title {
+    font-size: clamp(3rem, 8vw, 5rem);
+    font-weight: var(--font-weight-extrabold);
+    margin-bottom: 20px;
+    background: linear-gradient(45deg, var(--accent-gold), #ffd700);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-align: center;
+}
+
+.ventures-hero .hero-subtitle {
+    font-size: clamp(1.2rem, 3vw, 1.6rem);
+    font-weight: var(--font-weight-light);
+    color: var(--text-gray);
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 40px;
+    line-height: 1.6;
+}
+
+.hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    margin-top: 40px;
+}
+
+.hero-stats .stat {
+    text-align: center;
+}
+
+.hero-stats .stat-number {
+    font-size: 2.5rem;
+    font-weight: var(--font-weight-extrabold);
+    color: var(--accent-gold);
+    margin-bottom: 5px;
+}
+
+.hero-stats .stat-label {
+    font-size: 0.9rem;
+    color: var(--text-gray);
+    font-weight: var(--font-weight-medium);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Floating Elements Animation */
+.hero-visual {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.floating-elements {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.floating-element {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background: rgba(215, 138, 0, 0.1);
+    border: 2px solid var(--accent-gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: var(--accent-gold);
+    animation: float 6s ease-in-out infinite;
+}
+
+.floating-element.element-1 {
+    top: 20%;
+    left: 10%;
+    animation-delay: 0s;
+}
+
+.floating-element.element-2 {
+    top: 60%;
+    right: 15%;
+    animation-delay: 2s;
+}
+
+.floating-element.element-3 {
+    bottom: 30%;
+    left: 20%;
+    animation-delay: 4s;
+}
+
+.floating-element.element-4 {
+    top: 40%;
+    right: 30%;
+    animation-delay: 1s;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-20px) rotate(180deg);
+    }
+}
+
+/* Ventures Overview */
+.ventures-overview {
+    padding: var(--section-padding);
+    background: var(--primary-white);
+    color: var(--primary-black);
+}
+
+.ventures-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 60px;
+    margin-top: 60px;
+}
+
+.venture-card {
+    background: var(--primary-black);
+    border-radius: 20px;
+    padding: 50px;
+    color: var(--primary-white);
+    position: relative;
+    overflow: hidden;
+    transition: var(--transition-medium);
+    border: 2px solid transparent;
+}
+
+.venture-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 30px 60px rgba(215, 138, 0, 0.2);
+    border-color: var(--accent-gold);
+}
+
+.venture-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent-gold), #ffd700);
+}
+
+.venture-icon {
+    font-size: 4rem;
+    color: var(--accent-gold);
+    margin-bottom: 30px;
+}
+
+.venture-content h3 {
+    font-size: 2.5rem;
+    font-weight: var(--font-weight-bold);
+    margin-bottom: 10px;
+    color: var(--primary-white);
+}
+
+.venture-content h4 {
+    font-size: 1.3rem;
+    font-weight: var(--font-weight-semibold);
+    color: var(--accent-gold);
+    margin-bottom: 20px;
+}
+
+.venture-content p {
+    font-size: 1.1rem;
+    color: var(--text-gray);
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.services-list {
+    margin-bottom: 30px;
+}
+
+.service-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+    color: var(--primary-white);
+}
+
+.service-item i {
+    color: var(--accent-gold);
+    font-size: 1.1rem;
+}
+
+.tech-stack,
+.creative-process {
+    margin-bottom: 30px;
+}
+
+.tech-stack h5,
+.creative-process h5 {
+    font-size: 1.2rem;
+    font-weight: var(--font-weight-semibold);
+    color: var(--primary-white);
+    margin-bottom: 15px;
+}
+
+.tech-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.tech-tag {
+    background: var(--secondary-gray);
+    color: var(--accent-gold);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: var(--font-weight-medium);
+    border: 1px solid var(--accent-gold);
+}
+
+.process-steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+}
+
+.process-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    color: var(--primary-white);
+}
+
+.step-number {
+    width: 40px;
+    height: 40px;
+    background: var(--accent-gold);
+    color: var(--primary-black);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: var(--font-weight-bold);
+    margin-bottom: 10px;
+}
+
+.process-step span {
+    font-size: 0.9rem;
+    font-weight: var(--font-weight-medium);
+}
+
+/* Case Studies */
+.case-studies {
+    padding: var(--section-padding);
+    background: var(--secondary-gray);
+}
+
+.case-studies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 40px;
+    margin-top: 60px;
+}
+
+.case-study {
+    background: var(--primary-black);
+    border-radius: 15px;
+    overflow: hidden;
+    transition: var(--transition-medium);
+    border: 1px solid var(--border-gray);
+}
+
+.case-study:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(215, 138, 0, 0.1);
+    border-color: var(--accent-gold);
+}
+
+.case-image {
+    height: 200px;
+    position: relative;
+}
+
+.case-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: var(--accent-gold);
+}
+
+.tech-case {
+    background: linear-gradient(135deg, var(--secondary-gray), var(--primary-black));
+}
+
+.creative-case {
+    background: linear-gradient(135deg, var(--primary-black), var(--secondary-gray));
+}
+
+.case-content {
+    padding: 30px;
+}
+
+.case-category {
+    color: var(--accent-gold);
+    font-size: 0.9rem;
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+}
+
+.case-content h3 {
+    font-size: 1.5rem;
+    font-weight: var(--font-weight-bold);
+    color: var(--primary-white);
+    margin-bottom: 15px;
+}
+
+.case-content p {
+    color: var(--text-gray);
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.case-results {
+    display: flex;
+    gap: 30px;
+}
+
+.result-item {
+    text-align: center;
+}
+
+.result-number {
+    display: block;
+    font-size: 1.8rem;
+    font-weight: var(--font-weight-extrabold);
+    color: var(--accent-gold);
+    margin-bottom: 5px;
+}
+
+.result-label {
+    font-size: 0.9rem;
+    color: var(--text-gray);
+    font-weight: var(--font-weight-medium);
+}
+
+/* Why Choose Us */
+.why-choose-us {
+    padding: var(--section-padding);
+    background: var(--primary-black);
+}
+
+.advantages-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 40px;
+    margin-top: 60px;
+}
+
+.advantage-item {
+    text-align: center;
+    padding: 40px 20px;
+    border-radius: 15px;
+    transition: var(--transition-medium);
+    border: 1px solid var(--border-gray);
+}
+
+.advantage-item:hover {
+    background: var(--secondary-gray);
+    transform: translateY(-5px);
+    border-color: var(--accent-gold);
+}
+
+.advantage-icon {
+    font-size: 3rem;
+    color: var(--accent-gold);
+    margin-bottom: 20px;
+}
+
+.advantage-item h3 {
+    font-size: 1.3rem;
+    font-weight: var(--font-weight-bold);
+    color: var(--primary-white);
+    margin-bottom: 15px;
+}
+
+.advantage-item p {
+    color: var(--text-gray);
+    line-height: 1.6;
+}
+
+/* Contact Section */
+.ventures-contact {
+    padding: var(--section-padding);
+    background: var(--primary-white);
+    color: var(--primary-black);
+}
+
+.contact-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: start;
+}
+
+.contact-info h2 {
+    font-size: clamp(2.5rem, 4vw, 3.5rem);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: 20px;
+    color: var(--primary-black);
+}
+
+.contact-info p {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 40px;
+    line-height: 1.6;
+}
+
+.contact-methods {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.contact-method {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.contact-method i {
+    font-size: 1.5rem;
+    color: var(--accent-gold);
+    width: 40px;
+    text-align: center;
+}
+
+.contact-method h4 {
+    font-size: 1.1rem;
+    font-weight: var(--font-weight-semibold);
+    color: var(--primary-black);
+    margin-bottom: 5px;
+}
+
+.contact-method p {
+    color: #666;
+    margin: 0;
+    font-size: 1rem;
+}
+
+.contact-form-container {
+    background: #f8f9fa;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.contact-form h3 {
+    font-size: 1.8rem;
+    font-weight: var(--font-weight-bold);
+    color: var(--primary-black);
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.contact-form .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.contact-form .form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.contact-form label {
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: 8px;
+    color: var(--primary-black);
+}
+
+.contact-form input,
+.contact-form select,
+.contact-form textarea {
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: var(--border-radius);
+    font-size: 16px;
+    transition: var(--transition-fast);
+    background: var(--primary-white);
+    color: var(--primary-black);
+}
+
+.contact-form input:focus,
+.contact-form select:focus,
+.contact-form textarea:focus {
+    outline: none;
+    border-color: var(--accent-gold);
+    box-shadow: 0 0 0 3px rgba(215, 138, 0, 0.1);
+}
+
+.contact-form textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.submit-button {
+    background: var(--accent-gold);
+    color: var(--primary-white);
+    border: none;
+    padding: 15px 40px;
+    border-radius: var(--border-radius);
+    font-size: 16px;
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    transition: var(--transition-fast);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 auto;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.submit-button:hover {
+    background: #b87500;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(215, 138, 0, 0.3);
+}
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(9, 1, 1, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    padding: 20px;
+}
+
+.modal-content {
+    background: var(--primary-black);
+    border-radius: 15px;
+    max-width: 600px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    border: 2px solid var(--accent-gold);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px 30px 0;
+    border-bottom: 1px solid var(--border-gray);
+    margin-bottom: 30px;
+}
+
+.modal-header h3 {
+    font-size: 1.8rem;
+    font-weight: var(--font-weight-bold);
+    color: var(--primary-white);
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: var(--text-gray);
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.modal-close:hover {
+    color: var(--accent-gold);
+}
+
+.modal-body {
+    padding: 0 30px 30px;
+}
+
+.modal-body .form-group {
+    margin-bottom: 20px;
+}
+
+.modal-body label {
+    display: block;
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: 8px;
+    color: var(--primary-white);
+}
+
+.modal-body input,
+.modal-body select,
+.modal-body textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid var(--border-gray);
+    border-radius: var(--border-radius);
+    background: var(--secondary-gray);
+    color: var(--primary-white);
+    font-size: 16px;
+    transition: var(--transition-fast);
+}
+
+.modal-body input:focus,
+.modal-body select:focus,
+.modal-body textarea:focus {
+    outline: none;
+    border-color: var(--accent-gold);
+    box-shadow: 0 0 0 3px rgba(215, 138, 0, 0.1);
+}
+
+.modal-body textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero-stats {
+        flex-direction: column;
+        gap: 30px;
+    }
+    
+    .ventures-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .venture-card {
+        padding: 30px;
+    }
+    
+    .case-studies-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .advantages-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .contact-content {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+    
+    .contact-form .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .process-steps {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .floating-element {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .venture-card {
+        padding: 20px;
+    }
+    
+    .contact-form-container {
+        padding: 20px;
+    }
+    
+    .modal-content {
+        margin: 10px;
+    }
+    
+    .modal-header,
+    .modal-body {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+    
+    .process-steps {
+        grid-template-columns: 1fr;
+    }
+    
+    .case-results {
+        flex-direction: column;
+        gap: 15px;
+    }
+}
+
+/* Animation Classes for Ventures Page */
+.venture-card {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 0.8s ease;
+}
+
+.venture-card.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.case-study {
+    opacity: 0;
+    transform: translateX(-50px);
+    transition: all 0.8s ease;
+}
+
+.case-study.visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.advantage-item {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.6s ease;
+}
+
+.advantage-item.visible {
+    opacity: 1;
+    transform: translateY(0);
+}

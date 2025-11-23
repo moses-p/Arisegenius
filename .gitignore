@@ -1,0 +1,38 @@
+# Node / dependencies
+node_modules/
+frontend/node_modules/
+backend/node_modules/
+
+# Build outputs
+backend/dist/
+frontend/dist/
+coverage/
+
+# Environment / secrets
+.env
+backend/.env
+frontend/.env
+
+# Logs & temp
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store
+Thumbs.db
+
+# Prisma
+backend/prisma/generated/
+
+# Docker / local
+.docker
+.env.local
+.env.production
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
