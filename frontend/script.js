@@ -328,18 +328,20 @@ class B2BPortal {
     }
     
     setupDealerLogin() {
-        const loginButton = document.querySelector('.btn-primary');
+        const loginButton = document.getElementById('dealer-login-btn');
         if (loginButton) {
-            loginButton.addEventListener('click', () => {
+            loginButton.addEventListener('click', (e) => {
+                e.preventDefault();
                 this.showLoginModal();
             });
         }
     }
     
     setupDealerApplication() {
-        const applyButton = document.querySelector('.btn-secondary');
+        const applyButton = document.getElementById('become-dealer-btn');
         if (applyButton) {
-            applyButton.addEventListener('click', () => {
+            applyButton.addEventListener('click', (e) => {
+                e.preventDefault();
                 this.showApplicationModal();
             });
         }
