@@ -203,7 +203,7 @@ export class PaymentService {
           status: PaymentStatus.PROCESSING,
           transactionId: paymentIntent.id,
           response: paymentIntent,
-          redirectUrl: paymentIntent.next_action?.redirect_to_url?.url,
+          redirectUrl: paymentIntent.next_action?.redirect_to_url?.url || undefined,
           message: 'Payment requires additional authentication',
         };
       } else {

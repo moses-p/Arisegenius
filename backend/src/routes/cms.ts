@@ -1,14 +1,15 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import { prisma } from '../lib/prisma';
 import { asyncHandler } from '../middleware/errorHandler';
 import { requireAdmin } from '../middleware/auth';
 import { sanitizeHtml, generateSlug } from '../utils/helpers';
+import { SettingType } from '@prisma/client';
 
 const router = Router();
 
 router.get(
   '/pages',
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req: Request, res: Response) => {
     const {
       status = 'PUBLISHED',
       search,
@@ -56,7 +57,7 @@ router.get(
 
 router.get(
   '/pages/:slug',
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req: Request, res: Response) => {
     const { slug } = req.params;
 
     const page = await prisma.page.findUnique({
@@ -80,7 +81,7 @@ router.get(
 
 router.get(
   '/blog',
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req: Request, res: Response) => {
     const {
       status = 'PUBLISHED',
       search,
@@ -137,7 +138,7 @@ router.get(
 
 router.get(
   '/blog/:slug',
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req: Request, res: Response) => {
     const { slug } = req.params;
 
     const post = await prisma.blogPost.findUnique({
@@ -177,7 +178,7 @@ router.get(
 
 router.get(
   '/settings/public',
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req: Request, res: Response) => {
     const settings = await prisma.setting.findMany({
       where: { isPublic: true },
       select: {
@@ -198,7 +199,7 @@ router.use(requireAdmin);
 
 router.post(
   '/pages',
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req: Request, res: Response) => {
     const data = req.body;
 
     const page = await prisma.page.create({
@@ -217,7 +218,7 @@ router.post(
 
 router.put(
   '/pages/:id',
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req: Request, res: Response) => {
     const { id } = req.params;
     const data = req.body;
 
@@ -238,7 +239,7 @@ router.put(
 
 router.delete(
   '/pages/:id',
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req: Request, res: Response) => {
     const { id } = req.params;
 
     await prisma.page.delete({
@@ -253,7 +254,7 @@ router.delete(
 
 router.post(
   '/blog',
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req: Request, res: Response) => {
     const data = req.body;
     const slug = data.slug || generateSlug(data.title);
 
@@ -275,7 +276,7 @@ router.post(
 
 router.put(
   '/blog/:id',
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req: Request, res: Response) => {
     const { id } = req.params;
     const data = req.body;
 
@@ -297,7 +298,7 @@ router.put(
 
 router.delete(
   '/blog/:id',
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req: Request, res: Response) => {
     const { id } = req.params;
 
     await prisma.blogPost.delete({
@@ -312,7 +313,7 @@ router.delete(
 
 router.post(
   '/settings',
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req: Request, res: Response) => {
     const settings = req.body.settings;
 
     if (!Array.isArray(settings) || !settings.length) {
@@ -324,18 +325,24 @@ router.post(
     }
 
     await prisma.$transaction(
-      settings.map((setting: any) =>
-        prisma.setting.upsert({
+      settings.map((setting: any) => {
+        return prisma.setting.upsert({
           where: { key: setting.key },
           update: {
             value: setting.value,
-            type: setting.type,
+            type: setting.type as SettingType,
             description: setting.description,
             isPublic: setting.isPublic,
           },
-          create: setting,
-        })
-      )
+          create: {
+            key: setting.key,
+            value: setting.value,
+            type: setting.type as SettingType,
+            description: setting.description,
+            isPublic: setting.isPublic,
+          },
+        });
+      })
     );
 
     res.json({

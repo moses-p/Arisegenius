@@ -18,7 +18,7 @@ const requireInsightsAccess = (req: Request, res: Response, next: NextFunction) 
 router.get(
   '/summary',
   requireInsightsAccess,
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req: Request, res: Response) => {
     const [orderCounts, paymentAggregates, userCounts, topProductSales] = await Promise.all([
       prisma.order.groupBy({
         by: ['status'],
@@ -90,7 +90,7 @@ router.get(
 router.get(
   '/sales/trends',
   requireInsightsAccess,
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req: Request, res: Response) => {
     const rangeDays = Math.min(parseInt((req.query.days as string) || '30', 10), 90);
     const since = new Date();
     since.setDate(since.getDate() - rangeDays);
@@ -141,7 +141,7 @@ router.get(
 router.get(
   '/customers/segments',
   requireInsightsAccess,
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req: Request, res: Response) => {
     const customerSegments = await prisma.user.groupBy({
       by: ['role'],
       _count: { _all: true },
@@ -150,24 +150,23 @@ router.get(
     const topCountries = await prisma.address.groupBy({
       by: ['country'],
       _count: { _all: true },
-      orderBy: {
-        _count: {
-          _all: 'desc',
-        },
-      },
-      take: 5,
     });
+
+    // Sort by count and take top 5
+    const sortedCountries = topCountries
+      .sort((a, b) => (b._count?._all || 0) - (a._count?._all || 0))
+      .slice(0, 5);
 
     res.json({
       message: 'Customer segments retrieved successfully',
       data: {
         roles: customerSegments.map((segment) => ({
           role: segment.role,
-          total: segment._count._all,
+          total: segment._count?._all || 0,
         })),
-        topCountries: topCountries.map((country) => ({
+        topCountries: sortedCountries.map((country) => ({
           country: country.country || 'Unknown',
-          total: country._count._all,
+          total: country._count?._all || 0,
         })),
       },
     });
@@ -177,7 +176,7 @@ router.get(
 router.get(
   '/dealers/performance',
   requireInsightsAccess,
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req: Request, res: Response) => {
     const dealers = await prisma.dealerProfile.findMany({
       include: {
         orders: {

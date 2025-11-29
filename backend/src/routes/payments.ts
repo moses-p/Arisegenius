@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import { PaymentService } from '../services/paymentService';
 import { asyncHandler } from '../middleware/errorHandler';
 import { authenticateToken } from '../middleware/auth';
@@ -9,7 +9,7 @@ const router = Router();
 router.post(
   '/process',
   authenticateToken,
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req: Request, res: Response) => {
     const { orderId, method, paymentDetails = {}, currency, amount } = req.body;
 
     if (!orderId || !method) {
@@ -64,7 +64,7 @@ router.post(
 router.get(
   '/:paymentId/status',
   authenticateToken,
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req: Request, res: Response) => {
     const { paymentId } = req.params;
 
     const payment = await prisma.payment.findUnique({
@@ -109,7 +109,7 @@ router.get(
 
 router.post(
   '/webhook/:provider',
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req: Request, res: Response) => {
     const { provider } = req.params;
     const signature = (req.headers['stripe-signature'] as string) || '';
 

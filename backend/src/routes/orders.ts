@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import { prisma } from '../lib/prisma';
 import { asyncHandler } from '../middleware/errorHandler';
 import { generateOrderNumber } from '../utils/helpers';
@@ -20,7 +20,7 @@ const ensureOrderAccess = (req: any, order: any) => {
 
 router.get(
   '/',
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req: Request, res: Response) => {
     const {
       status,
       paymentStatus,
@@ -119,7 +119,7 @@ router.get(
 
 router.get(
   '/:id',
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req: Request, res: Response) => {
     const { id } = req.params;
 
     const order = await prisma.order.findUnique({
@@ -171,7 +171,7 @@ router.get(
 
 router.post(
   '/',
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req: Request, res: Response) => {
     const userId = req.user?.user.id;
 
     if (!userId) {
@@ -307,7 +307,7 @@ router.post(
 
 router.patch(
   '/:id/status',
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req: Request, res: Response) => {
     if (!req.user?.isAdmin && !req.user?.isDealer) {
       res.status(403).json({
         error: 'Access denied',

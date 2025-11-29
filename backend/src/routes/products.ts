@@ -79,7 +79,7 @@ router.get(
     }
 
     if (minPrice || maxPrice) {
-      const priceFilter: NonNullable<ProductWhereInput['price']> = {};
+      const priceFilter: any = {};
       if (minPrice) {
         priceFilter.gte = Number(minPrice);
       }

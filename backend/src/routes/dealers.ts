@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import { prisma } from '../lib/prisma';
 import { asyncHandler } from '../middleware/errorHandler';
 import { requireAdmin, requireDealer } from '../middleware/auth';
@@ -21,7 +21,7 @@ const ensureDealerAccess = (req: any, dealerId: string) => {
 router.get(
   '/',
   requireAdmin,
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req: Request, res: Response) => {
     const dealers = await prisma.dealerProfile.findMany({
       include: {
         user: {
@@ -70,7 +70,7 @@ router.get(
 router.get(
   '/me',
   requireDealer,
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req: Request, res: Response) => {
     const dealerId = req.user?.user.dealerProfile?.id;
 
     if (!dealerId) {
@@ -115,7 +115,7 @@ router.get(
 
 router.get(
   '/:dealerId',
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req: Request, res: Response) => {
     const { dealerId } = req.params;
 
     if (!ensureDealerAccess(req, dealerId)) {
@@ -157,7 +157,7 @@ router.get(
 router.patch(
   '/:dealerId/status',
   requireAdmin,
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req: Request, res: Response) => {
     const { dealerId } = req.params;
     const { status, commissionRate, creditLimit } = req.body;
 
@@ -194,7 +194,7 @@ router.patch(
 
 router.get(
   '/:dealerId/inventory',
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req: Request, res: Response) => {
     const { dealerId } = req.params;
 
     if (!ensureDealerAccess(req, dealerId)) {
@@ -223,7 +223,7 @@ router.get(
 router.post(
   '/inventory',
   requireDealer,
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req: Request, res: Response) => {
     const dealerId = req.user?.user.dealerProfile?.id;
     const { items } = req.body;
 

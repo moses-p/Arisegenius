@@ -607,6 +607,72 @@ class ProductsAnimationController {
 // Initialize Products Animations
 const productsAnimationController = new ProductsAnimationController();
 
+// Hash navigation handler for product categories
+function handleHashNavigation() {
+    // Check if there's a hash in the URL
+    if (window.location.hash) {
+        const hash = window.location.hash.substring(1); // Remove the #
+        const validCategories = ['passenger', 'performance', 'truck', 'offroad'];
+        
+        if (validCategories.includes(hash)) {
+            // Wait for page to load, then scroll to the section
+            setTimeout(() => {
+                const targetElement = document.getElementById(hash);
+                if (targetElement) {
+                    targetElement.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start' 
+                    });
+                    
+                    // Add a highlight effect
+                    targetElement.style.transition = 'box-shadow 0.3s ease';
+                    targetElement.style.boxShadow = '0 0 20px rgba(215, 138, 0, 0.5)';
+                    setTimeout(() => {
+                        targetElement.style.boxShadow = '';
+                    }, 2000);
+                }
+            }, 100);
+        }
+    }
+}
+
+// Handle hash changes (when clicking links)
+window.addEventListener('hashchange', handleHashNavigation);
+
+// Handle initial page load with hash
+document.addEventListener('DOMContentLoaded', () => {
+    handleHashNavigation();
+    
+    // Fix dropdown links to properly navigate
+    const dropdownLinks = document.querySelectorAll('.dropdown-content a');
+    dropdownLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            const href = link.getAttribute('href');
+            if (href && href.startsWith('#')) {
+                e.preventDefault();
+                const hash = href.substring(1);
+                const targetElement = document.getElementById(hash);
+                if (targetElement) {
+                    targetElement.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start' 
+                    });
+                    
+                    // Update URL hash
+                    window.history.pushState(null, null, href);
+                    
+                    // Add highlight effect
+                    targetElement.style.transition = 'box-shadow 0.3s ease';
+                    targetElement.style.boxShadow = '0 0 20px rgba(215, 138, 0, 0.5)';
+                    setTimeout(() => {
+                        targetElement.style.boxShadow = '';
+                    }, 2000);
+                }
+            }
+        });
+    });
+});
+
 // Export functions for global access
 window.showProductModal = showProductModal;
 window.showProductDetails = showProductDetails;
@@ -614,3 +680,4 @@ window.findDealer = findDealer;
 window.getQuote = getQuote;
 window.searchDealers = searchDealers;
 window.closeSuccessModal = closeSuccessModal;
+window.handleHashNavigation = handleHashNavigation;

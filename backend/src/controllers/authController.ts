@@ -1046,18 +1046,22 @@ function generateTokens(user: any, rememberMe: boolean = false) {
     dealerId: user.dealerProfile?.dealerId,
   };
 
-  const expiresIn: string | number = rememberMe ? '30d' : process.env.JWT_EXPIRES_IN || '7d';
-  const refreshExpiresIn: string | number = process.env.JWT_REFRESH_EXPIRES_IN || '30d';
+  const expiresIn = rememberMe ? '30d' : (process.env.JWT_EXPIRES_IN || '7d');
+  const refreshExpiresIn = process.env.JWT_REFRESH_EXPIRES_IN || '30d';
   const jwtSecret = process.env.JWT_SECRET as Secret;
   const jwtRefreshSecret = process.env.JWT_REFRESH_SECRET as Secret;
 
+  if (!jwtSecret || !jwtRefreshSecret) {
+    throw new Error('JWT secrets are not configured');
+  }
+
   const accessToken = jwt.sign(payload, jwtSecret, {
-    expiresIn,
-  });
+    expiresIn: expiresIn,
+  } as jwt.SignOptions);
 
   const refreshToken = jwt.sign(payload, jwtRefreshSecret, {
     expiresIn: refreshExpiresIn,
-  });
+  } as jwt.SignOptions);
 
   return {
     accessToken,
