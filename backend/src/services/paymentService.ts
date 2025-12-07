@@ -5,10 +5,12 @@ import { PaymentMethod, PaymentProvider, PaymentStatus } from '@prisma/client';
 import { io } from '../server';
 import { prisma } from '../lib/prisma';
 
-// Initialize Stripe
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2023-10-16',
-});
+// Initialize Stripe (only if configured)
+const stripe = process.env.STRIPE_SECRET_KEY 
+  ? new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: '2023-10-16',
+    })
+  : null;
 
 // M-Pesa configuration
 const MPESA_CONFIG = {
@@ -159,15 +161,18 @@ export class PaymentService {
    * Process Stripe payment
    */
   private static async processStripePayment(order: any, paymentDetails: any): Promise<PaymentProcessorResult> {
+    if (!stripe) {
+      throw new Error('Stripe is not configured. Please add STRIPE_SECRET_KEY to your .env file');
+    }
     try {
       const { token, customerId } = paymentDetails;
 
       // Create or retrieve customer
       let customer;
       if (customerId) {
-        customer = await stripe.customers.retrieve(customerId);
+        customer = await stripe!.customers.retrieve(customerId);
       } else {
-        customer = await stripe.customers.create({
+        customer = await stripe!.customers.create({
           email: order.user.email,
           name: `${order.user.firstName} ${order.user.lastName}`,
           metadata: {
@@ -178,7 +183,7 @@ export class PaymentService {
       }
 
       // Create payment intent
-      const paymentIntent = await stripe.paymentIntents.create({
+      const paymentIntent = await stripe!.paymentIntents.create({
         amount: Math.round(Number(order.totalAmount) * 100), // Convert to cents
         currency: (order.currency || 'USD').toLowerCase(),
         customer: customer.id,
@@ -258,6 +263,9 @@ export class PaymentService {
    * Process M-Pesa payment
    */
   private static async processMpesaPayment(order: any, paymentDetails: any): Promise<PaymentProcessorResult> {
+    if (!process.env.MPESA_CONSUMER_KEY || !process.env.MPESA_CONSUMER_SECRET) {
+      throw new Error('M-Pesa is not configured. Please add MPESA_CONSUMER_KEY and MPESA_CONSUMER_SECRET to your .env file');
+    }
     try {
       const { phoneNumber } = paymentDetails;
       
@@ -330,6 +338,9 @@ export class PaymentService {
    * Process Airtel Money payment
    */
   private static async processAirtelMoneyPayment(order: any, paymentDetails: any): Promise<PaymentProcessorResult> {
+    if (!process.env.AIRTEL_CLIENT_ID || !process.env.AIRTEL_CLIENT_SECRET) {
+      throw new Error('Airtel Money is not configured. Please add AIRTEL_CLIENT_ID and AIRTEL_CLIENT_SECRET to your .env file');
+    }
     try {
       const { phoneNumber } = paymentDetails;
       
@@ -395,6 +406,9 @@ export class PaymentService {
    * Process MTN Mobile Money payment
    */
   private static async processMTNPayment(order: any, paymentDetails: any): Promise<PaymentProcessorResult> {
+    if (!process.env.MTN_SUBSCRIPTION_KEY) {
+      throw new Error('MTN Mobile Money is not configured. Please add MTN_SUBSCRIPTION_KEY to your .env file');
+    }
     try {
       const { phoneNumber } = paymentDetails;
       
@@ -532,6 +546,9 @@ export class PaymentService {
    * Handle Stripe webhook
    */
   private static async handleStripeWebhook(payload: any, signature: string) {
+    if (!stripe) {
+      throw new Error('Stripe is not configured');
+    }
     try {
       const event = stripe.webhooks.constructEvent(
         payload,
@@ -726,11 +743,23 @@ export class PaymentService {
 // Initialize payment services
 export async function initializePaymentServices() {
   try {
+    const stripeConfigured = !!(process.env.STRIPE_SECRET_KEY && process.env.STRIPE_PUBLISHABLE_KEY);
+    const mpesaConfigured = !!(process.env.MPESA_CONSUMER_KEY && process.env.MPESA_CONSUMER_SECRET);
+    const airtelConfigured = !!(process.env.AIRTEL_CLIENT_ID && process.env.AIRTEL_CLIENT_SECRET);
+    const mtnConfigured = !!process.env.MTN_SUBSCRIPTION_KEY;
+
     console.log('✅ Payment services initialized');
-    console.log('  - Stripe:', process.env.STRIPE_SECRET_KEY ? '✅' : '❌');
-    console.log('  - M-Pesa:', process.env.MPESA_CONSUMER_KEY ? '✅' : '❌');
-    console.log('  - Airtel Money:', process.env.AIRTEL_CLIENT_ID ? '✅' : '❌');
-    console.log('  - MTN Mobile Money:', process.env.MTN_SUBSCRIPTION_KEY ? '✅' : '❌');
+    console.log('  - Stripe:', stripeConfigured ? '✅ Configured' : '⚠️  Not configured (development mode)');
+    console.log('  - M-Pesa:', mpesaConfigured ? '✅ Configured' : '⚠️  Not configured (development mode)');
+    console.log('  - Airtel Money:', airtelConfigured ? '✅ Configured' : '⚠️  Not configured (development mode)');
+    console.log('  - MTN Mobile Money:', mtnConfigured ? '✅ Configured' : '⚠️  Not configured (development mode)');
+    
+    if (!stripeConfigured && !mpesaConfigured && !airtelConfigured && !mtnConfigured) {
+      console.log('');
+      console.log('ℹ️  Payment gateways are not configured. This is normal for development.');
+      console.log('   Payment processing will be disabled until credentials are added to .env');
+      console.log('   See backend/env.example for required configuration variables.');
+    }
   } catch (error) {
     console.error('❌ Failed to initialize payment services:', error);
     throw error;

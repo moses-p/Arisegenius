@@ -53,7 +53,6 @@ src/
 - **Language**: TypeScript
 - **Database**: PostgreSQL 15
 - **ORM**: Prisma
-- **Cache**: Redis
 - **Authentication**: JWT
 - **File Upload**: Multer
 - **Email**: Nodemailer
@@ -67,7 +66,6 @@ src/
 
 - Node.js 18+ 
 - PostgreSQL 15+
-- Redis 7+
 - Docker & Docker Compose (optional)
 
 ## 🚀 Quick Start
@@ -93,9 +91,6 @@ Required environment variables:
 ```env
 # Database
 DATABASE_URL="postgresql://username:password@localhost:5432/arisegenius_db"
-
-# Redis
-REDIS_URL="redis://localhost:6379"
 
 # JWT Secrets
 JWT_SECRET="your-super-secret-jwt-key"
@@ -295,7 +290,6 @@ socket.on('order-status-update', (data) => {
 ### Health Checks
 - **API Health**: `GET /health`
 - **Database Health**: Automatic connection monitoring
-- **Redis Health**: Automatic connection monitoring
 
 ### Logging
 - **Application Logs**: `./logs/combined.log`
@@ -320,8 +314,7 @@ npm run test:integration
 ### Environment Setup
 
 1. **Database**: Set up PostgreSQL with proper backups
-2. **Redis**: Configure Redis for caching and sessions
-3. **SSL**: Configure SSL certificates for HTTPS
+2. **SSL**: Configure SSL certificates for HTTPS
 4. **Domain**: Set up domain and DNS
 5. **Monitoring**: Set up application monitoring
 
@@ -338,7 +331,6 @@ npm run test:integration
 
 ### Performance Optimization
 
-- [ ] Enable Redis caching
 - [ ] Configure CDN for static assets
 - [ ] Optimize database queries
 - [ ] Enable gzip compression
