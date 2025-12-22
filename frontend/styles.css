@@ -930,8 +930,8 @@ h3 {
     }
 
     .products-grid {
-        grid-template-columns: 1fr;
-        gap: 30px;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
     }
 
     .tech-grid {
@@ -940,13 +940,13 @@ h3 {
     }
 
     .about-grid {
-        grid-template-columns: 1fr;
-        gap: 30px;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
     }
 
     .sustainability-grid {
-        grid-template-columns: 1fr;
-        gap: 30px;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
     }
 
     .b2b-content {
@@ -1078,8 +1078,8 @@ h3 {
 
     /* News grid */
     .news-grid {
-        grid-template-columns: 1fr;
-        gap: 25px;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
     }
 
     .news-card {

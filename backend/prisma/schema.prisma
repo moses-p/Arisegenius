@@ -436,6 +436,7 @@ enum PaymentProvider {
   STRIPE
   PAYPAL
   MPESA
+  PESAPAL
   AIRTEL
   MTN
   BANK

@@ -119,5 +119,30 @@ router.post(
   })
 );
 
+// Pesapal callback (redirect after payment)
+router.get(
+  '/pesapal/callback',
+  asyncHandler(async (req: Request, res: Response) => {
+    const { OrderTrackingId, OrderMerchantReference } = req.query;
+    
+    if (OrderTrackingId) {
+      // Redirect to frontend with payment status
+      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+      res.redirect(`${frontendUrl}/payment/callback?trackingId=${OrderTrackingId}&reference=${OrderMerchantReference}`);
+    } else {
+      res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/payment/callback?error=invalid`);
+    }
+  })
+);
+
+// Pesapal IPN (Instant Payment Notification)
+router.post(
+  '/pesapal/ipn',
+  asyncHandler(async (req: Request, res: Response) => {
+    await PaymentService.handleWebhook('pesapal', req.body, '');
+    res.json({ received: true });
+  })
+);
+
 export default router;
 

@@ -24,24 +24,19 @@ const MPESA_CONFIG = {
     : 'https://sandbox.safaricom.co.ke',
 };
 
-// Airtel Money configuration
-const AIRTEL_CONFIG = {
-  clientId: process.env.AIRTEL_CLIENT_ID!,
-  clientSecret: process.env.AIRTEL_CLIENT_SECRET!,
-  merchantId: process.env.AIRTEL_MERCHANT_ID!,
-  environment: process.env.AIRTEL_ENVIRONMENT || 'sandbox',
-  baseUrl: process.env.AIRTEL_ENVIRONMENT === 'production'
-    ? 'https://openapiuat.airtel.africa'
-    : 'https://openapiuat.airtel.africa',
-};
-
-// MTN Mobile Money configuration
-const MTN_CONFIG = {
-  subscriptionKey: process.env.MTN_SUBSCRIPTION_KEY!,
-  environment: process.env.MTN_ENVIRONMENT || 'sandbox',
-  baseUrl: process.env.MTN_ENVIRONMENT === 'production'
-    ? 'https://api.mtn.com'
-    : 'https://sandbox.mtn.com',
+// Pesapal configuration (for MTN and Airtel Mobile Money)
+const PESAPAL_CONFIG = {
+  consumerKey: process.env.PESAPAL_CONSUMER_KEY!,
+  consumerSecret: process.env.PESAPAL_CONSUMER_SECRET!,
+  environment: process.env.PESAPAL_ENVIRONMENT || 'sandbox',
+  baseUrl: process.env.PESAPAL_ENVIRONMENT === 'production'
+    ? 'https://pay.pesapal.com/v3'
+    : 'https://cybqa.pesapal.com/pesapalv3',
+  callbackUrl: process.env.PESAPAL_CALLBACK_URL || `${process.env.API_BASE_URL || 'http://localhost:3000'}/api/v1/payments/pesapal/callback`,
+  ipnUrl: process.env.PESAPAL_IPN_URL || `${process.env.API_BASE_URL || 'http://localhost:3000'}/api/v1/payments/pesapal/ipn`,
+  // Default phone numbers
+  mtnDefaultPhone: process.env.MTN_DEFAULT_PHONE || '256775538145', // +256775538145
+  airtelDefaultPhone: process.env.AIRTEL_DEFAULT_PHONE || '256743232445', // +256743232445
 };
 
 type PaymentProcessorResult = {
@@ -102,10 +97,10 @@ export class PaymentService {
           paymentResult = await this.processMpesaPayment(order, paymentDetails);
           break;
         case 'AIRTEL_MONEY':
-          paymentResult = await this.processAirtelMoneyPayment(order, paymentDetails);
+          paymentResult = await this.processPesapalPayment(order, paymentDetails, 'AIRTEL');
           break;
         case 'MTN_MOBILE_MONEY':
-          paymentResult = await this.processMTNPayment(order, paymentDetails);
+          paymentResult = await this.processPesapalPayment(order, paymentDetails, 'MTN');
           break;
         default:
           throw new Error(`Unsupported payment method: ${method}`);
@@ -335,135 +330,94 @@ export class PaymentService {
   }
 
   /**
-   * Process Airtel Money payment
+   * Process Pesapal payment (for MTN and Airtel Mobile Money)
    */
-  private static async processAirtelMoneyPayment(order: any, paymentDetails: any): Promise<PaymentProcessorResult> {
-    if (!process.env.AIRTEL_CLIENT_ID || !process.env.AIRTEL_CLIENT_SECRET) {
-      throw new Error('Airtel Money is not configured. Please add AIRTEL_CLIENT_ID and AIRTEL_CLIENT_SECRET to your .env file');
+  private static async processPesapalPayment(order: any, paymentDetails: any, provider: 'MTN' | 'AIRTEL'): Promise<PaymentProcessorResult> {
+    if (!process.env.PESAPAL_CONSUMER_KEY || !process.env.PESAPAL_CONSUMER_SECRET) {
+      throw new Error('Pesapal is not configured. Please add PESAPAL_CONSUMER_KEY and PESAPAL_CONSUMER_SECRET to your .env file');
     }
+    
     try {
-      const { phoneNumber } = paymentDetails;
-      
+      // Use provided phone number or default
+      let phoneNumber = paymentDetails.phoneNumber;
       if (!phoneNumber) {
-        throw new Error('Phone number is required for Airtel Money payment');
+        phoneNumber = provider === 'MTN' ? PESAPAL_CONFIG.mtnDefaultPhone : PESAPAL_CONFIG.airtelDefaultPhone;
+      }
+      
+      // Format phone number (remove + and ensure it starts with country code)
+      phoneNumber = phoneNumber.replace(/^\+/, '').replace(/\s/g, '');
+      if (!phoneNumber.startsWith('256')) {
+        phoneNumber = '256' + phoneNumber.replace(/^0/, '');
       }
 
-      // Get Airtel access token
-      const accessToken = await this.getAirtelAccessToken();
+      // Get Pesapal access token
+      const accessToken = await this.getPesapalAccessToken();
+
+      // Determine payment method code for Pesapal
+      const paymentMethod = provider === 'MTN' ? 'MTNMOBILEMONEYUG' : 'AIRTELMONEYUG';
 
       // Create payment request
       const paymentData = {
-        reference: order.orderNumber,
-        subscriber: {
-          msisdn: phoneNumber,
-        },
-        transaction: {
-          amount: order.totalAmount,
-          id: `airtel_${Date.now()}`,
+        id: order.orderNumber,
+        currency: order.currency || 'UGX',
+        amount: Number(order.totalAmount).toFixed(2),
+        description: `Payment for Arisegenius order ${order.orderNumber}`,
+        callback_url: PESAPAL_CONFIG.callbackUrl,
+        notification_id: PESAPAL_CONFIG.ipnUrl,
+        billing_address: {
+          email_address: order.user.email,
+          phone_number: phoneNumber,
+          country_code: 'UG',
+          first_name: order.user.firstName || 'Customer',
+          middle_name: '',
+          last_name: order.user.lastName || '',
+          line_1: paymentDetails.address || '',
+          line_2: '',
+          city: paymentDetails.city || '',
+          state: paymentDetails.state || '',
+          postal_code: paymentDetails.postalCode || '',
+          zip_code: paymentDetails.postalCode || '',
         },
       };
 
       const response = await axios.post(
-        `${AIRTEL_CONFIG.baseUrl}/merchant/v1/payments/`,
+        `${PESAPAL_CONFIG.baseUrl}/api/Transactions/SubmitOrderRequest`,
         paymentData,
         {
           headers: {
-            Authorization: `Bearer ${accessToken}`,
+            'Authorization': `Bearer ${accessToken}`,
             'Content-Type': 'application/json',
-            'X-Country': 'UG', // Uganda
-            'X-Currency': 'UGX',
+            'Accept': 'application/json',
           },
         }
       );
 
-      if (response.data.status?.success) {
+      if (response.data && response.data.order_tracking_id) {
+        // Get payment link
+        const paymentLink = `${PESAPAL_CONFIG.baseUrl}/api/Transactions/GetPaymentLink?orderTrackingId=${response.data.order_tracking_id}`;
+        
         return {
           status: PaymentStatus.PROCESSING,
-          transactionId: response.data.data.transaction.id,
+          transactionId: response.data.order_tracking_id,
           response: response.data,
-          message: 'Airtel Money payment initiated. Please complete on your phone.',
+          redirectUrl: paymentLink,
+          message: `${provider} Mobile Money payment initiated via Pesapal. Please complete the payment.`,
         };
       } else {
         return {
           status: PaymentStatus.FAILED,
           transactionId: null,
           response: response.data,
-          message: 'Airtel Money payment initiation failed',
+          message: `${provider} Mobile Money payment initiation failed`,
         };
       }
-    } catch (error) {
-      console.error('Airtel Money payment error:', error);
+    } catch (error: any) {
+      console.error(`Pesapal ${provider} payment error:`, error);
       return {
         status: PaymentStatus.FAILED,
         transactionId: null,
-        response: error,
-        message: 'Airtel Money payment failed',
-      };
-    }
-  }
-
-  /**
-   * Process MTN Mobile Money payment
-   */
-  private static async processMTNPayment(order: any, paymentDetails: any): Promise<PaymentProcessorResult> {
-    if (!process.env.MTN_SUBSCRIPTION_KEY) {
-      throw new Error('MTN Mobile Money is not configured. Please add MTN_SUBSCRIPTION_KEY to your .env file');
-    }
-    try {
-      const { phoneNumber } = paymentDetails;
-      
-      if (!phoneNumber) {
-        throw new Error('Phone number is required for MTN Mobile Money payment');
-      }
-
-      // Create payment request
-      const paymentData = {
-        amount: Number(order.totalAmount).toString(),
-        currency: order.currency,
-        externalId: order.orderNumber,
-        payer: {
-          partyIdType: 'MSISDN',
-          partyId: phoneNumber,
-        },
-        payerMessage: `Payment for order ${order.orderNumber}`,
-        payeeNote: `Arisegenius order ${order.orderNumber}`,
-      };
-
-      const response = await axios.post(
-        `${MTN_CONFIG.baseUrl}/collection/v1_0/requesttopay`,
-        paymentData,
-        {
-          headers: {
-            'Authorization': `Bearer ${MTN_CONFIG.subscriptionKey}`,
-            'Content-Type': 'application/json',
-            'X-Reference-Id': `mtn_${Date.now()}`,
-            'X-Target-Environment': MTN_CONFIG.environment,
-          },
-        }
-      );
-
-      if (response.status === 202) {
-        return {
-          status: PaymentStatus.PROCESSING,
-          transactionId: response.headers['x-reference-id'] as string,
-          response: response.data,
-          message: 'MTN Mobile Money payment initiated. Please complete on your phone.',
-        };
-      } else {
-        return {
-          status: PaymentStatus.FAILED,
-          transactionId: null,
-          response: response.data,
-          message: 'MTN Mobile Money payment initiation failed',
-        };
-      }
-    } catch (error) {
-      console.error('MTN Mobile Money payment error:', error);
-      return {
-        status: PaymentStatus.FAILED,
-        transactionId: null,
-        response: error,
-        message: 'MTN Mobile Money payment failed',
+        response: error.response?.data || error.message,
+        message: `${provider} Mobile Money payment failed: ${error.message}`,
       };
     }
   }
@@ -494,28 +448,30 @@ export class PaymentService {
   }
 
   /**
-   * Get Airtel access token
+   * Get Pesapal access token
    */
-  private static async getAirtelAccessToken(): Promise<string> {
+  private static async getPesapalAccessToken(): Promise<string> {
     try {
+      const auth = Buffer.from(
+        `${PESAPAL_CONFIG.consumerKey}:${PESAPAL_CONFIG.consumerSecret}`
+      ).toString('base64');
+
       const response = await axios.post(
-        `${AIRTEL_CONFIG.baseUrl}/auth/oauth2/token`,
-        {
-          client_id: AIRTEL_CONFIG.clientId,
-          client_secret: AIRTEL_CONFIG.clientSecret,
-          grant_type: 'client_credentials',
-        },
+        `${PESAPAL_CONFIG.baseUrl}/api/Auth/RequestToken`,
+        {},
         {
           headers: {
+            'Authorization': `Bearer ${auth}`,
             'Content-Type': 'application/json',
+            'Accept': 'application/json',
           },
         }
       );
 
-      return response.data.access_token;
+      return response.data.token;
     } catch (error) {
-      console.error('Airtel token error:', error);
-      throw new Error('Failed to get Airtel access token');
+      console.error('Pesapal token error:', error);
+      throw new Error('Failed to get Pesapal access token');
     }
   }
 
@@ -529,10 +485,8 @@ export class PaymentService {
           return await this.handleStripeWebhook(payload, signature);
         case 'mpesa':
           return await this.handleMpesaWebhook(payload);
-        case 'airtel':
-          return await this.handleAirtelWebhook(payload);
-        case 'mtn':
-          return await this.handleMTNWebhook(payload);
+        case 'pesapal':
+          return await this.handlePesapalWebhook(payload);
         default:
           throw new Error(`Unsupported webhook provider: ${provider}`);
       }
@@ -598,43 +552,61 @@ export class PaymentService {
   }
 
   /**
-   * Handle Airtel webhook
+   * Handle Pesapal webhook/IPN
    */
-  private static async handleAirtelWebhook(payload: any) {
+  private static async handlePesapalWebhook(payload: any) {
     try {
-      const { status, data } = payload;
+      const { OrderTrackingId, OrderMerchantReference, OrderNotificationType, OrderNotificationTypeId } = payload;
 
-      if (status.success && data.transaction.status === 'TS') {
-        // Transaction successful
-        await this.updatePaymentStatusByProviderId(data.transaction.id, PaymentStatus.COMPLETED);
-      } else {
-        // Transaction failed
-        await this.updatePaymentStatusByProviderId(data.transaction.id, PaymentStatus.FAILED);
+      // Get payment by order tracking ID
+      const payment = await prisma.payment.findFirst({
+        where: { providerTransactionId: OrderTrackingId },
+        include: { order: true },
+      });
+
+      if (!payment) {
+        console.log(`Pesapal webhook: Payment not found for tracking ID ${OrderTrackingId}`);
+        return { received: true };
       }
+
+      // Map Pesapal status to our PaymentStatus
+      // OrderNotificationTypeId: 1 = Payment, 2 = IPN
+      // Status codes: COMPLETED, FAILED, PENDING
+      let status: PaymentStatus = PaymentStatus.PROCESSING;
+
+      if (OrderNotificationType === 'COMPLETED' || OrderNotificationTypeId === 1) {
+        status = PaymentStatus.COMPLETED;
+      } else if (OrderNotificationType === 'FAILED' || OrderNotificationTypeId === 2) {
+        status = PaymentStatus.FAILED;
+      }
+
+      // Update payment status
+      await prisma.payment.update({
+        where: { id: payment.id },
+        data: {
+          status,
+          processedAt: status === PaymentStatus.COMPLETED ? new Date() : null,
+          providerResponse: payload,
+        },
+      });
+
+      // Update order status
+      await prisma.order.update({
+        where: { id: payment.orderId },
+        data: { paymentStatus: status },
+      });
+
+      // Emit real-time update
+      io.to(`order-${payment.orderId}`).emit('payment-status-update', {
+        orderId: payment.orderId,
+        paymentStatus: status,
+        paymentId: payment.id,
+        timestamp: new Date().toISOString(),
+      });
 
       return { received: true };
     } catch (error) {
-      console.error('Airtel webhook error:', error);
-      throw error;
-    }
-  }
-
-  /**
-   * Handle MTN webhook
-   */
-  private static async handleMTNWebhook(payload: any) {
-    try {
-      const { status, data } = payload;
-
-      if (status === 'SUCCESSFUL') {
-        await this.updatePaymentStatusByProviderId(data.externalId, PaymentStatus.COMPLETED);
-      } else {
-        await this.updatePaymentStatusByProviderId(data.externalId, PaymentStatus.FAILED);
-      }
-
-      return { received: true };
-    } catch (error) {
-      console.error('MTN webhook error:', error);
+      console.error('Pesapal webhook error:', error);
       throw error;
     }
   }
@@ -696,9 +668,8 @@ export class PaymentService {
       case 'MPESA':
         return PaymentProvider.MPESA;
       case 'AIRTEL_MONEY':
-        return PaymentProvider.AIRTEL;
       case 'MTN_MOBILE_MONEY':
-        return PaymentProvider.MTN;
+        return PaymentProvider.PESAPAL as PaymentProvider;
       default:
         return PaymentProvider.BANK;
     }
@@ -745,16 +716,19 @@ export async function initializePaymentServices() {
   try {
     const stripeConfigured = !!(process.env.STRIPE_SECRET_KEY && process.env.STRIPE_PUBLISHABLE_KEY);
     const mpesaConfigured = !!(process.env.MPESA_CONSUMER_KEY && process.env.MPESA_CONSUMER_SECRET);
-    const airtelConfigured = !!(process.env.AIRTEL_CLIENT_ID && process.env.AIRTEL_CLIENT_SECRET);
-    const mtnConfigured = !!process.env.MTN_SUBSCRIPTION_KEY;
+    const pesapalConfigured = !!(process.env.PESAPAL_CONSUMER_KEY && process.env.PESAPAL_CONSUMER_SECRET);
 
     console.log('✅ Payment services initialized');
     console.log('  - Stripe:', stripeConfigured ? '✅ Configured' : '⚠️  Not configured (development mode)');
     console.log('  - M-Pesa:', mpesaConfigured ? '✅ Configured' : '⚠️  Not configured (development mode)');
-    console.log('  - Airtel Money:', airtelConfigured ? '✅ Configured' : '⚠️  Not configured (development mode)');
-    console.log('  - MTN Mobile Money:', mtnConfigured ? '✅ Configured' : '⚠️  Not configured (development mode)');
+    console.log('  - Pesapal (MTN & Airtel):', pesapalConfigured ? '✅ Configured' : '⚠️  Not configured (development mode)');
     
-    if (!stripeConfigured && !mpesaConfigured && !airtelConfigured && !mtnConfigured) {
+    if (pesapalConfigured) {
+      console.log('    📱 MTN Mobile Money: Available via Pesapal');
+      console.log('    📱 Airtel Money: Available via Pesapal');
+    }
+    
+    if (!stripeConfigured && !mpesaConfigured && !pesapalConfigured) {
       console.log('');
       console.log('ℹ️  Payment gateways are not configured. This is normal for development.');
       console.log('   Payment processing will be disabled until credentials are added to .env');
