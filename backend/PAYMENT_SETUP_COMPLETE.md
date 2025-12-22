@@ -1,6 +1,9 @@
-# ✅ MTN & Airtel Payment Configuration - COMPLETE
+# ✅ Pesapal Integration for MTN & Airtel - COMPLETE
 
 ## 📱 Configuration Status
+
+### Payment Gateway: Pesapal
+Both **MTN Mobile Money** and **Airtel Money** are now processed through **Pesapal** payment gateway.
 
 ### Default Phone Numbers Configured:
 - **MTN Mobile Money**: `+256775538145` (256775538145)
@@ -9,18 +12,20 @@
 ### ✅ What's Been Configured:
 
 1. **Payment Service Updated**
-   - ✅ Default phone numbers added to MTN and Airtel configs
+   - ✅ Integrated Pesapal API for MTN and Airtel payments
+   - ✅ Default phone numbers configured
    - ✅ Automatic phone number formatting (handles +, spaces, country codes)
    - ✅ Falls back to default numbers if no phone provided in payment request
+   - ✅ Pesapal webhook/IPN handler implemented
 
 2. **Environment Variables**
-   - ✅ `MTN_DEFAULT_PHONE=256775538145` added to `.env`
-   - ✅ `AIRTEL_DEFAULT_PHONE=256743232445` added to `.env`
-   - ✅ `env.example` updated with default phone numbers
+   - ✅ Pesapal configuration added to `env.example`
+   - ✅ `MTN_DEFAULT_PHONE=256775538145` configured
+   - ✅ `AIRTEL_DEFAULT_PHONE=256743232445` configured
 
-3. **Auto-Configuration Script**
-   - ✅ `setup-mtn-airtel-auto.js` created and executed
-   - ✅ Automatically configures default phone numbers
+3. **Setup Scripts**
+   - ✅ `setup-pesapal.js` - Interactive Pesapal setup
+   - ✅ `setup-mtn-airtel-auto.js` - Auto-configuration helper
 
 ## 🚀 How It Works
 
@@ -63,28 +68,25 @@ POST /api/v1/payments/process
 
 ## ⚠️ Next Steps (Required for Production)
 
-To enable actual payments, you need to add API credentials:
+To enable actual payments, you need to add Pesapal credentials:
 
-### MTN Mobile Money:
-1. Register at: https://momodeveloper.mtn.com
-2. Get your `MTN_SUBSCRIPTION_KEY`
-3. Add to `.env`:
+### Pesapal Setup:
+1. Register at: https://developer.pesapal.com
+2. Create a merchant account
+3. Get your credentials:
+   - `PESAPAL_CONSUMER_KEY`
+   - `PESAPAL_CONSUMER_SECRET`
+4. Add to `.env`:
    ```env
-   MTN_SUBSCRIPTION_KEY="your_actual_subscription_key_here"
+   PESAPAL_CONSUMER_KEY="your_consumer_key"
+   PESAPAL_CONSUMER_SECRET="your_consumer_secret"
+   PESAPAL_ENVIRONMENT="sandbox"  # or "production"
    ```
 
-### Airtel Money:
-1. Register at: https://developer.airtel.africa
-2. Get your credentials:
-   - `AIRTEL_CLIENT_ID`
-   - `AIRTEL_CLIENT_SECRET`
-   - `AIRTEL_MERCHANT_ID`
-3. Add to `.env`:
-   ```env
-   AIRTEL_CLIENT_ID="your_client_id"
-   AIRTEL_CLIENT_SECRET="your_client_secret"
-   AIRTEL_MERCHANT_ID="your_merchant_id"
-   ```
+**Quick Setup:**
+```bash
+node backend/setup-pesapal.js
+```
 
 ## ✅ Verification
 
@@ -94,8 +96,9 @@ After adding credentials, restart your backend server. You should see:
 ✅ Payment services initialized
   - Stripe: ⚠️  Not configured (development mode)
   - M-Pesa: ⚠️  Not configured (development mode)
-  - Airtel Money: ✅ Configured
-  - MTN Mobile Money: ✅ Configured
+  - Pesapal (MTN & Airtel): ✅ Configured
+    📱 MTN Mobile Money: Available via Pesapal
+    📱 Airtel Money: Available via Pesapal
 ```
 
 ## 🧪 Testing
@@ -111,8 +114,9 @@ Once credentials are added, you can test payments:
 
 - Default phone numbers are set for **immediate payment capability**
 - Phone numbers are automatically formatted for API compatibility
-- Both services default to `sandbox` environment for testing
-- Change `MTN_ENVIRONMENT` and `AIRTEL_ENVIRONMENT` to `production` when ready
+- Pesapal defaults to `sandbox` environment for testing
+- Change `PESAPAL_ENVIRONMENT` to `production` when ready
+- Both MTN and Airtel payments go through Pesapal gateway
 
 ---
 

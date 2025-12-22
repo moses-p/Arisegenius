@@ -139,8 +139,18 @@ router.get(
 router.post(
   '/pesapal/ipn',
   asyncHandler(async (req: Request, res: Response) => {
-    await PaymentService.handleWebhook('pesapal', req.body, '');
-    res.json({ received: true });
+    // Pesapal IPN can be XML or JSON
+    let payload = req.body;
+    
+    // If it's XML string, pass it as-is
+    if (typeof req.body === 'string' || req.body.toString().includes('<?xml')) {
+      payload = req.body.toString();
+    }
+    
+    await PaymentService.handleWebhook('pesapal', payload, '');
+    
+    // Pesapal expects "OK" response for IPN
+    res.status(200).send('OK');
   })
 );
 

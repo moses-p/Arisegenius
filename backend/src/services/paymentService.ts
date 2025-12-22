@@ -354,9 +354,10 @@ export class PaymentService {
       const accessToken = await this.getPesapalAccessToken();
 
       // Determine payment method code for Pesapal
+      // Pesapal payment method codes: MTNMOBILEMONEYUG, AIRTELMONEYUG
       const paymentMethod = provider === 'MTN' ? 'MTNMOBILEMONEYUG' : 'AIRTELMONEYUG';
 
-      // Create payment request
+      // Create payment request according to Pesapal API v3
       const paymentData = {
         id: order.orderNumber,
         currency: order.currency || 'UGX',
@@ -371,15 +372,16 @@ export class PaymentService {
           first_name: order.user.firstName || 'Customer',
           middle_name: '',
           last_name: order.user.lastName || '',
-          line_1: paymentDetails.address || '',
+          line_1: paymentDetails.address || 'Kampala',
           line_2: '',
-          city: paymentDetails.city || '',
+          city: paymentDetails.city || 'Kampala',
           state: paymentDetails.state || '',
           postal_code: paymentDetails.postalCode || '',
           zip_code: paymentDetails.postalCode || '',
         },
       };
 
+      // Submit order to Pesapal
       const response = await axios.post(
         `${PESAPAL_CONFIG.baseUrl}/api/Transactions/SubmitOrderRequest`,
         paymentData,
@@ -393,22 +395,32 @@ export class PaymentService {
       );
 
       if (response.data && response.data.order_tracking_id) {
-        // Get payment link
-        const paymentLink = `${PESAPAL_CONFIG.baseUrl}/api/Transactions/GetPaymentLink?orderTrackingId=${response.data.order_tracking_id}`;
+        // Get payment link for redirect
+        const paymentLinkResponse = await axios.get(
+          `${PESAPAL_CONFIG.baseUrl}/api/Transactions/GetPaymentLink?orderTrackingId=${response.data.order_tracking_id}`,
+          {
+            headers: {
+              'Authorization': `Bearer ${accessToken}`,
+              'Accept': 'application/json',
+            },
+          }
+        );
+        
+        const redirectUrl = paymentLinkResponse.data?.redirect_url || paymentLinkResponse.data?.payment_link;
         
         return {
           status: PaymentStatus.PROCESSING,
           transactionId: response.data.order_tracking_id,
           response: response.data,
-          redirectUrl: paymentLink,
-          message: `${provider} Mobile Money payment initiated via Pesapal. Please complete the payment.`,
+          redirectUrl: redirectUrl || `${PESAPAL_CONFIG.baseUrl}/api/Transactions/GetPaymentLink?orderTrackingId=${response.data.order_tracking_id}`,
+          message: `${provider} Mobile Money payment initiated via Pesapal. Redirecting to payment page...`,
         };
       } else {
         return {
           status: PaymentStatus.FAILED,
           transactionId: null,
           response: response.data,
-          message: `${provider} Mobile Money payment initiation failed`,
+          message: `${provider} Mobile Money payment initiation failed: ${response.data?.message || 'Unknown error'}`,
         };
       }
     } catch (error: any) {
@@ -461,17 +473,23 @@ export class PaymentService {
         {},
         {
           headers: {
-            'Authorization': `Bearer ${auth}`,
+            'Authorization': `Basic ${auth}`,
             'Content-Type': 'application/json',
             'Accept': 'application/json',
           },
         }
       );
 
-      return response.data.token;
-    } catch (error) {
-      console.error('Pesapal token error:', error);
-      throw new Error('Failed to get Pesapal access token');
+      if (response.data && response.data.token) {
+        return response.data.token;
+      } else if (response.data && response.data.access_token) {
+        return response.data.access_token;
+      } else {
+        throw new Error('Invalid token response from Pesapal');
+      }
+    } catch (error: any) {
+      console.error('Pesapal token error:', error.response?.data || error.message);
+      throw new Error(`Failed to get Pesapal access token: ${error.message}`);
     }
   }
 
@@ -556,28 +574,58 @@ export class PaymentService {
    */
   private static async handlePesapalWebhook(payload: any) {
     try {
-      const { OrderTrackingId, OrderMerchantReference, OrderNotificationType, OrderNotificationTypeId } = payload;
+      // Pesapal IPN can come in different formats
+      // Format 1: Direct object with OrderTrackingId
+      // Format 2: XML string that needs parsing
+      // Format 3: JSON with nested structure
+      
+      let orderTrackingId: string | null = null;
+      let paymentStatus: string | null = null;
+      
+      // Handle different payload formats
+      if (typeof payload === 'string') {
+        // XML format - extract OrderTrackingId
+        const match = payload.match(/<OrderTrackingId>(.*?)<\/OrderTrackingId>/);
+        if (match) orderTrackingId = match[1];
+        
+        const statusMatch = payload.match(/<OrderNotificationType>(.*?)<\/OrderNotificationType>/);
+        if (statusMatch) paymentStatus = statusMatch[1];
+      } else if (payload.OrderTrackingId) {
+        // JSON format
+        orderTrackingId = payload.OrderTrackingId;
+        paymentStatus = payload.OrderNotificationType || payload.Status;
+      } else if (payload.order_tracking_id) {
+        // Alternative JSON format
+        orderTrackingId = payload.order_tracking_id;
+        paymentStatus = payload.status || payload.payment_status;
+      }
+
+      if (!orderTrackingId) {
+        console.log('Pesapal webhook: No OrderTrackingId found in payload', payload);
+        return { received: true };
+      }
 
       // Get payment by order tracking ID
       const payment = await prisma.payment.findFirst({
-        where: { providerTransactionId: OrderTrackingId },
+        where: { providerTransactionId: orderTrackingId },
         include: { order: true },
       });
 
       if (!payment) {
-        console.log(`Pesapal webhook: Payment not found for tracking ID ${OrderTrackingId}`);
+        console.log(`Pesapal webhook: Payment not found for tracking ID ${orderTrackingId}`);
         return { received: true };
       }
 
       // Map Pesapal status to our PaymentStatus
-      // OrderNotificationTypeId: 1 = Payment, 2 = IPN
-      // Status codes: COMPLETED, FAILED, PENDING
+      // Pesapal statuses: COMPLETED, FAILED, PENDING, INVALID
       let status: PaymentStatus = PaymentStatus.PROCESSING;
 
-      if (OrderNotificationType === 'COMPLETED' || OrderNotificationTypeId === 1) {
+      if (paymentStatus === 'COMPLETED' || paymentStatus === 'COMPLETE') {
         status = PaymentStatus.COMPLETED;
-      } else if (OrderNotificationType === 'FAILED' || OrderNotificationTypeId === 2) {
+      } else if (paymentStatus === 'FAILED' || paymentStatus === 'FAILURE' || paymentStatus === 'INVALID') {
         status = PaymentStatus.FAILED;
+      } else if (paymentStatus === 'PENDING') {
+        status = PaymentStatus.PROCESSING;
       }
 
       // Update payment status
@@ -586,7 +634,7 @@ export class PaymentService {
         data: {
           status,
           processedAt: status === PaymentStatus.COMPLETED ? new Date() : null,
-          providerResponse: payload,
+          providerResponse: typeof payload === 'string' ? { xml: payload } : payload,
         },
       });
 
