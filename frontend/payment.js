@@ -6,10 +6,48 @@ let selectedMobileProvider = null;
 
 // Initialize payment page
 document.addEventListener('DOMContentLoaded', function() {
+    loadPendingOrder();
     initializePaymentOptions();
     initializeFormValidation();
     initializeAnimations();
 });
+
+// Load pending order from sessionStorage
+function loadPendingOrder() {
+    const pendingOrderStr = sessionStorage.getItem('pendingOrder');
+    if (pendingOrderStr) {
+        try {
+            const orderData = JSON.parse(pendingOrderStr);
+            const orderSummary = document.querySelector('.order-summary');
+            if (orderSummary) {
+                // Update order summary with tire details
+                const orderItems = orderSummary.querySelector('.order-items');
+                if (orderItems) {
+                    orderItems.innerHTML = `
+                        <div class="order-item">
+                            <div class="order-item-info">
+                                <h4>${orderData.tireName}</h4>
+                                <p>Size: ${orderData.tireSize}</p>
+                                <p>Category: ${orderData.category}</p>
+                            </div>
+                            <div class="order-item-price">
+                                ${orderData.tirePrice}
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                // Update total
+                const totalElement = orderSummary.querySelector('.order-total .total-amount');
+                if (totalElement) {
+                    totalElement.textContent = orderData.tirePrice;
+                }
+            }
+        } catch (error) {
+            console.error('Error loading pending order:', error);
+        }
+    }
+}
 
 // Initialize payment options
 function initializePaymentOptions() {
@@ -54,7 +92,9 @@ function showPaymentDetails(method) {
     const methodNames = {
         'mobile-money': 'Mobile Money',
         'paypal': 'PayPal',
-        'credit-card': 'Credit Card'
+        'credit-card': 'Credit Card',
+        'pesapal': 'Pesapal',
+        'bank-transfer': 'Bank Transfer'
     };
     
     document.getElementById('payment-method-used').textContent = methodNames[method] || method;

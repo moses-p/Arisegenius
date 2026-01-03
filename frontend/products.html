@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" itemscope itemtype="https://schema.org/CollectionPage">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>Arisegenius Products - Premium Tires for Every Vehicle</title>
     <meta name="description" content="Explore Arisegenius premium tire range: Passenger, Performance, Truck & Bus, and Off-Road tires. Engineered for African roads with global quality standards.">
     <meta name="keywords" content="passenger tires, performance tires, truck tires, off-road tires, commercial tires, African tires">
@@ -12,6 +12,82 @@
     <meta property="og:description" content="Discover our complete range of premium tires designed for African conditions and global quality standards.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://arisegenius.com/products">
+    <meta property="og:image" content="https://arisegenius.com/og-products.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Arisegenius Premium Tires">
+    <meta property="og:site_name" content="Arisegenius">
+    <meta property="og:locale" content="en_US">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Arisegenius Products - Premium Tires for Every Vehicle">
+    <meta name="twitter:description" content="Discover our complete range of premium tires designed for African conditions and global quality standards.">
+    <meta name="twitter:image" content="https://arisegenius.com/android-chrome-512x512.png">
+    <meta name="twitter:image:alt" content="Arisegenius Premium Tires">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://arisegenius.com/products">
+    
+    <!-- Robots Meta -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    
+    <!-- Structured Data - CollectionPage -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "Arisegenius Products",
+      "description": "Explore Arisegenius premium tire range: Passenger, Performance, Truck & Bus, and Off-Road tires.",
+      "url": "https://arisegenius.com/products",
+      "mainEntity": {
+        "@type": "ItemList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Passenger Tires",
+            "url": "https://arisegenius.com/products#passenger"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Performance Tires",
+            "url": "https://arisegenius.com/products#performance"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Truck & Bus Tires",
+            "url": "https://arisegenius.com/products#truck"
+          },
+          {
+            "@type": "ListItem",
+            "position": 4,
+            "name": "Off-Road Tires",
+            "url": "https://arisegenius.com/products#offroad"
+          }
+        ]
+      },
+      "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://arisegenius.com"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Products",
+            "item": "https://arisegenius.com/products"
+          }
+        ]
+      }
+    }
+    </script>
     
     <!-- Favicon and Icons -->
     <link rel="icon" type="image/x-icon" href="favicon.ico">
@@ -38,6 +114,7 @@
     <!-- CSS -->
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="products.css">
+    <link rel="stylesheet" href="responsive-utilities.css">
     
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -47,12 +124,12 @@
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <div class="nav-logo">
-                <a href="index.html">
-                    <h1>ARISEGENIUS</h1>
+                <a href="/" style="text-decoration: none; color: inherit;">
+                    <img src="android-chrome-512x512.png" alt="Arisegenius Logo" class="nav-logo-img">
                 </a>
             </div>
             <div class="nav-menu" id="nav-menu">
-                <a href="index.html" class="nav-link">Home</a>
+                <a href="/" class="nav-link">Home</a>
                 <a href="about.html" class="nav-link">About</a>
                 <div class="nav-dropdown">
                     <a href="products.html" class="nav-link active">Products <i class="fas fa-chevron-down"></i></a>
@@ -67,7 +144,9 @@
                 <a href="sustainability.html" class="nav-link">Sustainability</a>
                 <a href="news.html" class="nav-link">News</a>
                 <a href="contact.html" class="nav-link">Contact</a>
+                <a href="payment.html" class="nav-link">Payment</a>
                 <a href="ventures.html" class="nav-link ventures-link">More Ventures</a>
+                <a href="admin.html" class="nav-link" style="color: var(--accent-gold);">Admin</a>
             </div>
             <div class="nav-toggle" id="nav-toggle">
                 <span class="bar"></span>
@@ -464,11 +543,11 @@
                 <h2>Ready to Find Your Perfect Tire?</h2>
                 <p>Use our tire finder tool to get personalized recommendations based on your vehicle and driving needs.</p>
                 <div class="cta-buttons">
-                    <button class="cta-button primary" onclick="window.location.href='index.html#tire-finder'">
+                    <button class="cta-button primary" onclick="window.location.href='/#tire-finder'">
                         <span>Find Your Tire</span>
                         <i class="fas fa-search"></i>
                     </button>
-                    <button class="cta-button secondary" onclick="window.location.href='index.html#contact'">
+                    <button class="cta-button secondary" onclick="window.location.href='/#contact'">
                         <span>Contact Us</span>
                         <i class="fas fa-phone"></i>
                     </button>

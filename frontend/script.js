@@ -1,30 +1,119 @@
-// DOM Elements
+// DOM Elements - with error handling
 const navbar = document.getElementById('navbar');
 const navToggle = document.getElementById('nav-toggle');
 const navMenu = document.getElementById('nav-menu');
 const tireFinderSection = document.getElementById('tire-finder');
 
-// Navigation Toggle
-navToggle.addEventListener('click', () => {
+// Navigation Toggle - with error handling
+if (navToggle && navMenu) {
+    navToggle.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
     navMenu.classList.toggle('active');
     navToggle.classList.toggle('active');
 });
 
-// Close mobile menu when clicking on a link
-document.querySelectorAll('.nav-link').forEach(link => {
-    link.addEventListener('click', () => {
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', (e) => {
+        if (navMenu.classList.contains('active') && 
+            !navMenu.contains(e.target) && 
+            !navToggle.contains(e.target)) {
         navMenu.classList.remove('active');
         navToggle.classList.remove('active');
+        }
+    });
+}
+
+// Mobile dropdown toggle
+document.querySelectorAll('.nav-dropdown > .nav-link').forEach(dropdownLink => {
+    dropdownLink.addEventListener('click', function(e) {
+        // Only toggle on mobile (screen width <= 768px)
+        if (window.innerWidth <= 768) {
+            e.preventDefault();
+            const dropdown = this.parentElement;
+            const isActive = dropdown.classList.contains('active');
+            
+            // Close all other dropdowns
+            document.querySelectorAll('.nav-dropdown').forEach(dd => {
+                if (dd !== dropdown) {
+                    dd.classList.remove('active');
+                }
+            });
+            
+            // Toggle current dropdown
+            dropdown.classList.toggle('active', !isActive);
+        }
     });
 });
 
-// Navbar scroll effect
-window.addEventListener('scroll', () => {
-    if (window.scrollY > 100) {
-        navbar.style.background = 'rgba(9, 1, 1, 0.98)';
-    } else {
-        navbar.style.background = 'rgba(9, 1, 1, 0.95)';
+// Close mobile menu when clicking on a link (but not dropdown parent)
+document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', function(e) {
+        // Don't close if it's a dropdown parent on mobile
+        if (window.innerWidth <= 768 && this.parentElement.classList.contains('nav-dropdown')) {
+            return; // Let dropdown toggle handle it
+        }
+        
+        if (navMenu) navMenu.classList.remove('active');
+        if (navToggle) navToggle.classList.remove('active');
+    });
+});
+
+// Smooth scroll for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        const href = this.getAttribute('href');
+        if (href === '#' || href === '#!') return;
+        
+        const targetId = href.substring(1);
+        const targetElement = document.getElementById(targetId);
+        
+        if (targetElement) {
+            e.preventDefault();
+            const offset = 80; // Account for fixed navbar
+            const elementPosition = targetElement.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: 'smooth'
+            });
+            
+            // Close mobile menu if open
+            if (navMenu) navMenu.classList.remove('active');
+            if (navToggle) navToggle.classList.remove('active');
+        }
+    });
+});
+
+// Handle hash navigation on page load
+window.addEventListener('load', () => {
+    if (window.location.hash) {
+        const hash = window.location.hash.substring(1);
+        const targetElement = document.getElementById(hash);
+        if (targetElement) {
+            setTimeout(() => {
+                const offset = 80;
+                const elementPosition = targetElement.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - offset;
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+            }, 100);
+        }
     }
+});
+
+// Navbar scroll effect - keep transparent
+window.addEventListener('scroll', () => {
+    // Navbar stays transparent to avoid overlapping hero content
+    // You can uncomment below to add background on scroll if needed
+    // if (window.scrollY > 100) {
+    //     navbar.style.background = 'rgba(9, 1, 1, 0.95)';
+    // } else {
+    //     navbar.style.background = 'transparent';
+    // }
 });
 
 // Smooth scroll to tire finder
@@ -244,9 +333,14 @@ class TireFinder {
                         ${tire.features.map(feature => `<span class="feature-tag">${feature}</span>`).join('')}
                     </div>
                     <div class="tire-price">${tire.price}</div>
-                    <button class="btn-primary" onclick="showTireDetails(${tire.id})">
-                        View Details
-                    </button>
+                    <div style="display: flex; gap: 10px; margin-top: 10px;">
+                        <button class="btn-primary" onclick="showTireDetails(${tire.id})">
+                            View Details
+                        </button>
+                        <button class="btn-secondary" onclick="orderTire(${tire.id})" style="background: var(--accent-gold); color: var(--primary-black);">
+                            Order Now
+                        </button>
+                    </div>
                 </div>
             </div>
         `;
@@ -260,22 +354,36 @@ const tireFinder = new TireFinder();
 class ParallaxController {
     constructor() {
         this.parallaxElements = document.querySelectorAll('[data-speed]');
+        this.rafId = null;
+        this.isScrolling = false;
         this.init();
     }
     
     init() {
+        // Use requestAnimationFrame for smooth performance and prevent flickering
         window.addEventListener('scroll', () => {
-            this.updateParallax();
-        });
+            if (!this.isScrolling) {
+                this.isScrolling = true;
+                this.updateParallax();
+            }
+        }, { passive: true });
     }
     
     updateParallax() {
-        const scrolled = window.pageYOffset;
+        if (this.rafId) {
+            cancelAnimationFrame(this.rafId);
+        }
         
-        this.parallaxElements.forEach(element => {
-            const speed = element.getAttribute('data-speed');
-            const yPos = -(scrolled * speed);
-            element.style.transform = `translateY(${yPos}px)`;
+        this.rafId = requestAnimationFrame(() => {
+            const scrolled = window.pageYOffset;
+            
+            this.parallaxElements.forEach(element => {
+                const speed = element.getAttribute('data-speed');
+                const yPos = -(scrolled * speed);
+                // Use translate3d for hardware acceleration and prevent flickering
+                element.style.transform = `translate3d(0, ${yPos}px, 0)`;
+            });
+            this.isScrolling = false;
         });
     }
 }
@@ -495,8 +603,11 @@ function showTireDetails(tireId) {
                             </ul>
                         </div>
                         <div class="tire-actions">
-                            <button class="btn-primary">Find a Dealer</button>
-                            <button class="btn-secondary">Get Quote</button>
+                            <button class="btn-primary" onclick="orderTire(${tire.id})">
+                                <i class="fas fa-shopping-cart"></i> Order Now
+                            </button>
+                            <button class="btn-secondary" onclick="findDealerForTire('${tire.name}')">Find a Dealer</button>
+                            <button class="btn-secondary" onclick="getQuoteForTire('${tire.name}')">Get Quote</button>
                         </div>
                     </div>
                 </div>
@@ -544,15 +655,27 @@ const dealerLocator = new DealerLocator();
 // Performance optimization: Lazy loading for images
 class LazyLoader {
     constructor() {
+        this.loadedImages = new Set(); // Track loaded images to prevent reloading
         this.imageObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     const img = entry.target;
-                    img.src = img.dataset.src;
-                    img.classList.remove('lazy');
-                    this.imageObserver.unobserve(img);
+                    const dataSrc = img.dataset.src;
+                    
+                    // Prevent reloading if image is already loaded
+                    if (dataSrc && !this.loadedImages.has(dataSrc) && !img.src) {
+                        img.src = dataSrc;
+                        this.loadedImages.add(dataSrc);
+                        img.classList.remove('lazy');
+                        this.imageObserver.unobserve(img);
+                    } else if (img.src) {
+                        // Image already has src, just unobserve
+                        this.imageObserver.unobserve(img);
+                    }
                 }
             });
+        }, {
+            rootMargin: '50px' // Start loading slightly before image enters viewport
         });
         
         this.init();
@@ -560,12 +683,94 @@ class LazyLoader {
     
     init() {
         const lazyImages = document.querySelectorAll('img[data-src]');
-        lazyImages.forEach(img => this.imageObserver.observe(img));
+        lazyImages.forEach(img => {
+            // Only observe images that don't already have a src
+            if (!img.src || img.src === window.location.href) {
+                this.imageObserver.observe(img);
+            }
+        });
     }
 }
 
 // Initialize Lazy Loader
 const lazyLoader = new LazyLoader();
+
+// Enhanced Image Optimization
+class ImageOptimizer {
+    constructor() {
+        this.supportsWebP = this.checkWebPSupport();
+        this.init();
+    }
+
+    checkWebPSupport() {
+        const canvas = document.createElement('canvas');
+        canvas.width = 1;
+        canvas.height = 1;
+        return canvas.toDataURL('image/webp').indexOf('data:image/webp') === 0;
+    }
+
+    init() {
+        // Add loading="lazy" to all images without it
+        const images = document.querySelectorAll('img:not([loading])');
+        images.forEach(img => {
+            if (!img.hasAttribute('loading')) {
+                img.setAttribute('loading', 'lazy');
+            }
+            // Add decoding="async" for better performance
+            if (!img.hasAttribute('decoding')) {
+                img.setAttribute('decoding', 'async');
+            }
+        });
+    }
+}
+
+// Initialize Image Optimizer
+const imageOptimizer = new ImageOptimizer();
+
+// Service Worker Registration
+if ('serviceWorker' in navigator) {
+  let reloading = false; // Prevent multiple reloads
+  
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' })
+      .then((registration) => {
+        console.log('Service Worker registered successfully:', registration.scope);
+        
+        // Check for updates periodically (every hour)
+        setInterval(() => {
+          registration.update();
+        }, 3600000); // 1 hour
+        
+        // Only reload if there's a waiting service worker (not just installed)
+        registration.addEventListener('updatefound', () => {
+          const newWorker = registration.installing;
+          
+          newWorker.addEventListener('statechange', () => {
+            // Only reload when the new worker is waiting (ready to activate)
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller && !reloading) {
+              // Check if there's a waiting worker
+              if (registration.waiting) {
+                console.log('New service worker waiting, will activate on next page load');
+                // Don't auto-reload - let user continue browsing
+                // The new service worker will activate on next page navigation
+              }
+            }
+          });
+        });
+        
+        // Listen for controller change (when new service worker takes control)
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          if (!reloading) {
+            console.log('Service worker controller changed');
+            // Optional: Show a notification that the site has been updated
+          }
+        });
+      })
+      .catch((error) => {
+        console.log('Service Worker registration failed:', error);
+      });
+  });
+}
 
 // Form validation utility
 class FormValidator {
@@ -629,7 +834,43 @@ class Analytics {
 // Initialize page tracking
 Analytics.trackPageView('Home Page');
 
+// Order tire function - redirects to payment page
+function orderTire(tireId) {
+    const tire = tireFinder.tireResults.find(t => t.id === tireId);
+    if (!tire) {
+        console.error('Tire not found');
+        return;
+    }
+    
+    // Store tire order details in sessionStorage
+    const orderData = {
+        tireId: tire.id,
+        tireName: tire.name,
+        tireSize: tire.size,
+        tirePrice: tire.price,
+        category: tire.category,
+        timestamp: new Date().toISOString()
+    };
+    
+    sessionStorage.setItem('pendingOrder', JSON.stringify(orderData));
+    
+    // Redirect to payment page
+    window.location.href = 'payment.html';
+}
+
+// Helper functions for tire details modal
+function findDealerForTire(tireName) {
+    window.location.href = `products.html?search=${encodeURIComponent(tireName)}`;
+}
+
+function getQuoteForTire(tireName) {
+    window.location.href = `contact.html?quote=${encodeURIComponent(tireName)}`;
+}
+
 // Export functions for global access
 window.scrollToTireFinder = scrollToTireFinder;
 window.showTireDetails = showTireDetails;
+window.orderTire = orderTire;
+window.findDealerForTire = findDealerForTire;
+window.getQuoteForTire = getQuoteForTire;
 window.Analytics = Analytics;

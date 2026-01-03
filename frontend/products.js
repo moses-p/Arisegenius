@@ -248,11 +248,11 @@ function showProductDetails(category) {
                 </div>
                 
                 <div class="category-actions">
-                    <button class="btn btn-primary" onclick="window.location.href='index.html#tire-finder'">
+                    <button class="btn btn-primary" onclick="window.location.href='/#tire-finder'">
                         <i class="fas fa-search"></i>
                         Find Your Tire
                     </button>
-                    <button class="btn btn-secondary" onclick="window.location.href='index.html#contact'">
+                    <button class="btn btn-secondary" onclick="window.location.href='/#contact'">
                         <i class="fas fa-phone"></i>
                         Contact Us
                     </button>
@@ -619,9 +619,13 @@ function handleHashNavigation() {
             setTimeout(() => {
                 const targetElement = document.getElementById(hash);
                 if (targetElement) {
-                    targetElement.scrollIntoView({ 
-                        behavior: 'smooth', 
-                        block: 'start' 
+                    const offset = 80; // Account for fixed navbar
+                    const elementPosition = targetElement.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - offset;
+                    
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
                     });
                     
                     // Add a highlight effect
@@ -643,31 +647,129 @@ window.addEventListener('hashchange', handleHashNavigation);
 document.addEventListener('DOMContentLoaded', () => {
     handleHashNavigation();
     
+    // Initialize navbar functionality
+    const navToggle = document.getElementById('nav-toggle');
+    const navMenu = document.getElementById('nav-menu');
+    
+    if (navToggle && navMenu) {
+        navToggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            navMenu.classList.toggle('active');
+            navToggle.classList.toggle('active');
+        });
+        
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (navMenu.classList.contains('active') && 
+                !navMenu.contains(e.target) && 
+                !navToggle.contains(e.target)) {
+                navMenu.classList.remove('active');
+                navToggle.classList.remove('active');
+            }
+        });
+    }
+    
+    // Mobile dropdown toggle
+    document.querySelectorAll('.nav-dropdown > .nav-link').forEach(dropdownLink => {
+        dropdownLink.addEventListener('click', function(e) {
+            // Only toggle on mobile (screen width <= 768px)
+            if (window.innerWidth <= 768) {
+                e.preventDefault();
+                const dropdown = this.parentElement;
+                const isActive = dropdown.classList.contains('active');
+                
+                // Close all other dropdowns
+                document.querySelectorAll('.nav-dropdown').forEach(dd => {
+                    if (dd !== dropdown) {
+                        dd.classList.remove('active');
+                    }
+                });
+                
+                // Toggle current dropdown
+                dropdown.classList.toggle('active', !isActive);
+            }
+        });
+    });
+    
+    // Close mobile menu when clicking on a link (but not dropdown parent)
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+            // Don't close if it's a dropdown parent on mobile
+            if (window.innerWidth <= 768 && this.parentElement.classList.contains('nav-dropdown')) {
+                return; // Let dropdown toggle handle it
+            }
+            
+            if (navMenu) navMenu.classList.remove('active');
+            if (navToggle) navToggle.classList.remove('active');
+        });
+    });
+    
+    // Smooth scroll for anchor links with offset
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            const href = this.getAttribute('href');
+            if (href === '#' || href === '#!') return;
+            
+            const targetId = href.substring(1);
+            const targetElement = document.getElementById(targetId);
+            
+            if (targetElement) {
+                e.preventDefault();
+                const offset = 80; // Account for fixed navbar
+                const elementPosition = targetElement.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+                
+                // Close mobile menu if open
+                if (navMenu) navMenu.classList.remove('active');
+                if (navToggle) navToggle.classList.remove('active');
+            }
+        });
+    });
+    
     // Fix dropdown links to properly navigate
     const dropdownLinks = document.querySelectorAll('.dropdown-content a');
     dropdownLinks.forEach(link => {
         link.addEventListener('click', (e) => {
             const href = link.getAttribute('href');
-            if (href && href.startsWith('#')) {
-                e.preventDefault();
-                const hash = href.substring(1);
-                const targetElement = document.getElementById(hash);
-                if (targetElement) {
-                    targetElement.scrollIntoView({ 
-                        behavior: 'smooth', 
-                        block: 'start' 
-                    });
-                    
-                    // Update URL hash
-                    window.history.pushState(null, null, href);
-                    
-                    // Add highlight effect
-                    targetElement.style.transition = 'box-shadow 0.3s ease';
-                    targetElement.style.boxShadow = '0 0 20px rgba(215, 138, 0, 0.5)';
-                    setTimeout(() => {
-                        targetElement.style.boxShadow = '';
-                    }, 2000);
+            if (href) {
+                // If it's a hash link on the same page
+                if (href.startsWith('#')) {
+                    e.preventDefault();
+                    const hash = href.substring(1);
+                    const targetElement = document.getElementById(hash);
+                    if (targetElement) {
+                        const offset = 80;
+                        const elementPosition = targetElement.getBoundingClientRect().top;
+                        const offsetPosition = elementPosition + window.pageYOffset - offset;
+                        
+                        window.scrollTo({
+                            top: offsetPosition,
+                            behavior: 'smooth'
+                        });
+                        
+                        // Update URL hash
+                        window.history.pushState(null, null, href);
+                        
+                        // Add highlight effect
+                        targetElement.style.transition = 'box-shadow 0.3s ease';
+                        targetElement.style.boxShadow = '0 0 20px rgba(215, 138, 0, 0.5)';
+                        setTimeout(() => {
+                            targetElement.style.boxShadow = '';
+                        }, 2000);
+                    }
                 }
+                // If it's a cross-page link (products.html#section), let it navigate normally
+                // The target page will handle the hash navigation
+                
+                // Close mobile menu
+                if (navMenu) navMenu.classList.remove('active');
+                if (navToggle) navToggle.classList.remove('active');
             }
         });
     });

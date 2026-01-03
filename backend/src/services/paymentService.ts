@@ -42,6 +42,16 @@ const MTN_CONFIG = {
     : 'https://sandbox.mtn.com',
 };
 
+// Pesapal configuration
+const PESAPAL_CONFIG = {
+  consumerKey: process.env.PESAPAL_CONSUMER_KEY!,
+  consumerSecret: process.env.PESAPAL_CONSUMER_SECRET!,
+  environment: process.env.PESAPAL_ENVIRONMENT || 'sandbox',
+  baseUrl: process.env.PESAPAL_ENVIRONMENT === 'production'
+    ? 'https://pay.pesapal.com'
+    : 'https://cybqa.pesapal.com',
+};
+
 type PaymentProcessorResult = {
   status: PaymentStatus;
   transactionId: string | null;
@@ -104,6 +114,15 @@ export class PaymentService {
           break;
         case 'MTN_MOBILE_MONEY':
           paymentResult = await this.processMTNPayment(order, paymentDetails);
+          break;
+        case 'PESAPAL':
+          paymentResult = await this.processPesapalPayment(order, paymentDetails);
+          break;
+        case 'BANK_TRANSFER':
+          paymentResult = await this.processBankTransferPayment(order, paymentDetails);
+          break;
+        case 'CASH_ON_DELIVERY':
+          paymentResult = await this.processCashOnDeliveryPayment(order, paymentDetails);
           break;
         default:
           throw new Error(`Unsupported payment method: ${method}`);
@@ -392,6 +411,154 @@ export class PaymentService {
   }
 
   /**
+   * Process Pesapal payment
+   */
+  private static async processPesapalPayment(order: any, paymentDetails: any): Promise<PaymentProcessorResult> {
+    try {
+      // Get Pesapal access token
+      const accessToken = await this.getPesapalAccessToken();
+
+      // Generate unique order reference
+      const orderReference = `AG-${order.orderNumber}-${Date.now()}`;
+      
+      // Prepare payment request
+      const paymentData = {
+        id: orderReference,
+        currency: order.currency || 'KES',
+        amount: Number(order.totalAmount),
+        description: `Payment for order ${order.orderNumber}`,
+        callback_url: `${process.env.API_BASE_URL || 'http://localhost:3000'}/api/v1/payments/pesapal/callback`,
+        redirect_mode: 'PARENT_WINDOW',
+        notification_id: `${process.env.API_BASE_URL || 'http://localhost:3000'}/api/v1/payments/webhook/pesapal`,
+        billing_address: {
+          email_address: order.user.email,
+          phone_number: order.user.phone || '',
+          country_code: 'KE',
+          first_name: order.user.firstName,
+          middle_name: '',
+          last_name: order.user.lastName,
+          line_1: paymentDetails.billingAddress || '',
+          line_2: '',
+          city: paymentDetails.city || '',
+          state: paymentDetails.state || '',
+          postal_code: paymentDetails.postalCode || '',
+          zip_code: paymentDetails.postalCode || '',
+        },
+      };
+
+      const response = await axios.post(
+        `${PESAPAL_CONFIG.baseUrl}/pesapalv3/api/Transactions/SubmitOrderRequest`,
+        paymentData,
+        {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+        }
+      );
+
+      if (response.data && response.data.redirect_url) {
+        return {
+          status: PaymentStatus.PROCESSING,
+          transactionId: orderReference,
+          response: response.data,
+          redirectUrl: response.data.redirect_url,
+          message: 'Pesapal payment initiated. Please complete the payment.',
+        };
+      } else {
+        return {
+          status: PaymentStatus.FAILED,
+          transactionId: null,
+          response: response.data,
+          message: 'Pesapal payment initiation failed',
+        };
+      }
+    } catch (error: any) {
+      console.error('Pesapal payment error:', error);
+      return {
+        status: PaymentStatus.FAILED,
+        transactionId: null,
+        response: error.response?.data || error,
+        message: error.response?.data?.message || 'Pesapal payment failed',
+      };
+    }
+  }
+
+  /**
+   * Process Bank Transfer payment
+   */
+  private static async processBankTransferPayment(order: any, paymentDetails: any): Promise<PaymentProcessorResult> {
+    try {
+      // Generate unique payment reference
+      const paymentReference = `BANK-${order.orderNumber}-${Date.now()}`;
+      
+      // Bank transfer details (these should be configured in your system)
+      const bankDetails = {
+        bankName: process.env.BANK_NAME || 'Your Bank Name',
+        accountName: process.env.BANK_ACCOUNT_NAME || 'Arisegenius Ltd',
+        accountNumber: process.env.BANK_ACCOUNT_NUMBER || '1234567890',
+        swiftCode: process.env.BANK_SWIFT_CODE || 'SWIFTCODE',
+        branch: process.env.BANK_BRANCH || 'Main Branch',
+        reference: paymentReference,
+        amount: Number(order.totalAmount),
+        currency: order.currency || 'USD',
+      };
+
+      // Create payment record with PENDING status
+      // Payment will be manually verified when bank transfer is received
+      return {
+        status: PaymentStatus.PENDING,
+        transactionId: paymentReference,
+        response: {
+          bankDetails,
+          instructions: `Please transfer ${order.currency || 'USD'} ${order.totalAmount} to the account details provided. Use reference: ${paymentReference}`,
+          note: 'Your order will be confirmed once payment is verified. This usually takes 1-3 business days.',
+        },
+        message: 'Bank transfer instructions generated. Please complete the transfer and upload proof of payment.',
+      };
+    } catch (error: any) {
+      console.error('Bank transfer payment error:', error);
+      return {
+        status: PaymentStatus.FAILED,
+        transactionId: null,
+        response: error,
+        message: 'Bank transfer payment setup failed',
+      };
+    }
+  }
+
+  /**
+   * Process Cash on Delivery payment
+   */
+  private static async processCashOnDeliveryPayment(order: any, paymentDetails: any): Promise<PaymentProcessorResult> {
+    try {
+      // Generate unique payment reference
+      const paymentReference = `COD-${order.orderNumber}-${Date.now()}`;
+      
+      return {
+        status: PaymentStatus.PENDING,
+        transactionId: paymentReference,
+        response: {
+          paymentMethod: 'Cash on Delivery',
+          amount: Number(order.totalAmount),
+          currency: order.currency || 'USD',
+          note: 'Payment will be collected upon delivery.',
+        },
+        message: 'Cash on Delivery order confirmed. Payment will be collected upon delivery.',
+      };
+    } catch (error: any) {
+      console.error('Cash on Delivery payment error:', error);
+      return {
+        status: PaymentStatus.FAILED,
+        transactionId: null,
+        response: error,
+        message: 'Cash on Delivery setup failed',
+      };
+    }
+  }
+
+  /**
    * Process MTN Mobile Money payment
    */
   private static async processMTNPayment(order: any, paymentDetails: any): Promise<PaymentProcessorResult> {
@@ -480,6 +647,32 @@ export class PaymentService {
   }
 
   /**
+   * Get Pesapal access token
+   */
+  private static async getPesapalAccessToken(): Promise<string> {
+    try {
+      const response = await axios.post(
+        `${PESAPAL_CONFIG.baseUrl}/pesapalv3/api/Auth/RequestToken`,
+        {
+          consumer_key: PESAPAL_CONFIG.consumerKey,
+          consumer_secret: PESAPAL_CONFIG.consumerSecret,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+        }
+      );
+
+      return response.data.token;
+    } catch (error: any) {
+      console.error('Pesapal token error:', error.response?.data || error);
+      throw new Error('Failed to get Pesapal access token');
+    }
+  }
+
+  /**
    * Get Airtel access token
    */
   private static async getAirtelAccessToken(): Promise<string> {
@@ -519,6 +712,8 @@ export class PaymentService {
           return await this.handleAirtelWebhook(payload);
         case 'mtn':
           return await this.handleMTNWebhook(payload);
+        case 'pesapal':
+          return await this.handlePesapalWebhook(payload);
         default:
           throw new Error(`Unsupported webhook provider: ${provider}`);
       }
@@ -603,6 +798,48 @@ export class PaymentService {
   }
 
   /**
+   * Handle Pesapal webhook
+   */
+  private static async handlePesapalWebhook(payload: any) {
+    try {
+      const { OrderTrackingId, OrderMerchantReference, OrderNotificationType } = payload;
+
+      if (OrderNotificationType === 'PAYMENT') {
+        // Get payment status from Pesapal
+        const accessToken = await this.getPesapalAccessToken();
+        
+        const response = await axios.get(
+          `${PESAPAL_CONFIG.baseUrl}/pesapalv3/api/Transactions/GetTransactionStatus?orderTrackingId=${OrderTrackingId}`,
+          {
+            headers: {
+              'Authorization': `Bearer ${accessToken}`,
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+          }
+        );
+
+        const paymentStatus = response.data.payment_status_description || response.data.status;
+        
+        // Map Pesapal status to our PaymentStatus enum
+        if (paymentStatus === 'COMPLETED' || paymentStatus === 'COMPLETE') {
+          await this.updatePaymentStatusByProviderId(OrderMerchantReference, PaymentStatus.COMPLETED);
+        } else if (paymentStatus === 'FAILED' || paymentStatus === 'CANCELLED' || paymentStatus === 'CANCELED') {
+          await this.updatePaymentStatusByProviderId(OrderMerchantReference, PaymentStatus.FAILED);
+        } else if (paymentStatus === 'PENDING' || paymentStatus === 'INPROGRESS') {
+          // Keep as PROCESSING
+          await this.updatePaymentStatusByProviderId(OrderMerchantReference, PaymentStatus.PROCESSING);
+        }
+      }
+
+      return { received: true };
+    } catch (error) {
+      console.error('Pesapal webhook error:', error);
+      throw error;
+    }
+  }
+
+  /**
    * Handle MTN webhook
    */
   private static async handleMTNWebhook(payload: any) {
@@ -682,6 +919,12 @@ export class PaymentService {
         return PaymentProvider.AIRTEL;
       case 'MTN_MOBILE_MONEY':
         return PaymentProvider.MTN;
+      case 'PESAPAL':
+        return PaymentProvider.PESAPAL;
+      case 'BANK_TRANSFER':
+        return PaymentProvider.BANK;
+      case 'CASH_ON_DELIVERY':
+        return PaymentProvider.CASH;
       default:
         return PaymentProvider.BANK;
     }
@@ -731,6 +974,7 @@ export async function initializePaymentServices() {
     console.log('  - M-Pesa:', process.env.MPESA_CONSUMER_KEY ? '✅' : '❌');
     console.log('  - Airtel Money:', process.env.AIRTEL_CLIENT_ID ? '✅' : '❌');
     console.log('  - MTN Mobile Money:', process.env.MTN_SUBSCRIPTION_KEY ? '✅' : '❌');
+    console.log('  - Pesapal:', process.env.PESAPAL_CONSUMER_KEY ? '✅' : '❌');
   } catch (error) {
     console.error('❌ Failed to initialize payment services:', error);
     throw error;

@@ -8,7 +8,12 @@
     "dev": "npx live-server --port=3000 --open=/index.html",
     "build": "echo 'Frontend build completed'",
     "test": "echo 'No tests specified'",
-    "lint": "echo 'No linting configured'"
+    "lint": "echo 'No linting configured'",
+    "generate-og": "node generate-og-images.js",
+    "convert-og": "node convert-og-images.js",
+    "update-og": "node update-og-tags.js",
+    "seo-setup": "node auto-seo-setup.js",
+    "submit-sitemap": "node submit-sitemap.js"
   },
   "keywords": [
     "arisegenius",
@@ -22,6 +27,7 @@
   "license": "PROPRIETARY",
   "devDependencies": {
     "live-server": "^1.2.2",
+    "puppeteer": "^24.34.0",
     "serve": "^14.2.1"
   },
   "repository": {

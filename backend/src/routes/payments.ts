@@ -119,5 +119,31 @@ router.post(
   })
 );
 
+router.get(
+  '/pesapal/callback',
+  asyncHandler(async (req: Request, res: Response) => {
+    const { OrderTrackingId, OrderMerchantReference } = req.query;
+
+    if (!OrderTrackingId || !OrderMerchantReference) {
+      res.status(400).json({
+        error: 'Missing parameters',
+        message: 'OrderTrackingId and OrderMerchantReference are required',
+      });
+      return;
+    }
+
+    // Handle Pesapal callback
+    await PaymentService.handleWebhook('pesapal', {
+      OrderTrackingId,
+      OrderMerchantReference,
+      OrderNotificationType: 'PAYMENT',
+    }, '');
+
+    // Redirect to frontend success page
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+    res.redirect(`${frontendUrl}/payment.html?status=success&orderRef=${OrderMerchantReference}`);
+  })
+);
+
 export default router;
 

@@ -701,6 +701,30 @@
         text-align: center;
         gap: 10px;
     }
+    
+    /* Touch-friendly buttons */
+    .select-mobile,
+    .btn-primary,
+    .btn-secondary {
+        min-height: 44px;
+        padding: 12px 20px;
+    }
+    
+    /* Better form inputs */
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="number"] {
+        font-size: 16px;
+        min-height: 44px;
+        padding: 12px;
+    }
+    
+    /* Prevent horizontal scroll */
+    .payment-options {
+        width: 100%;
+        overflow-x: hidden;
+    }
 }
 
 /* Animation Classes */

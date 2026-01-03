@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>Arisegenius Ventures - Digital Innovation & Brand Excellence</title>
     <meta name="description" content="Arisegenius Ventures - Extending our expertise in innovation into software development and branding. Enterprise solutions, mobile apps, and strategic brand consulting.">
     <meta name="keywords" content="software development, ERP systems, mobile apps, branding, digital marketing, enterprise solutions, brand consulting">
@@ -12,6 +12,47 @@
     <meta property="og:description" content="Enterprise software solutions, custom mobile applications, and strategic brand consulting from Africa's leading innovators.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://arisegenius.com/ventures">
+    <meta property="og:image" content="https://arisegenius.com/og-ventures.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Arisegenius Ventures">
+    <meta property="og:site_name" content="Arisegenius">
+    <meta property="og:locale" content="en_US">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Arisegenius Ventures - Digital Innovation & Brand Excellence">
+    <meta name="twitter:description" content="Enterprise software solutions, custom mobile applications, and strategic brand consulting from Africa's leading innovators.">
+    <meta name="twitter:image" content="https://arisegenius.com/android-chrome-512x512.png">
+    <meta name="twitter:image:alt" content="Arisegenius Ventures">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://arisegenius.com/ventures">
+    
+    <!-- Robots Meta -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    
+    <!-- Structured Data - Breadcrumb -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://arisegenius.com"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Ventures",
+          "item": "https://arisegenius.com/ventures"
+        }
+      ]
+    }
+    </script>
     
     <!-- Favicon and Icons -->
     <link rel="icon" type="image/x-icon" href="favicon.ico">
@@ -35,6 +76,7 @@
     <!-- CSS -->
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="ventures.css">
+    <link rel="stylesheet" href="responsive-utilities.css">
     
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -44,19 +86,21 @@
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <div class="nav-logo">
-                <a href="index.html">
-                    <h1>ARISEGENIUS</h1>
+                <a href="/" style="text-decoration: none; color: inherit; display: flex; align-items: center;">
+                    <img src="android-chrome-512x512.png" alt="Arisegenius Logo" class="nav-logo-img">
                 </a>
             </div>
             <div class="nav-menu" id="nav-menu">
-                <a href="index.html" class="nav-link">Home</a>
+                <a href="/" class="nav-link">Home</a>
                 <a href="about.html" class="nav-link">About</a>
                 <a href="products.html" class="nav-link">Products</a>
                 <a href="technology.html" class="nav-link">Technology</a>
                 <a href="sustainability.html" class="nav-link">Sustainability</a>
                 <a href="news.html" class="nav-link">News</a>
                 <a href="contact.html" class="nav-link">Contact</a>
+                <a href="payment.html" class="nav-link">Payment</a>
                 <a href="ventures.html" class="nav-link ventures-link active">More Ventures</a>
+                <a href="admin.html" class="nav-link" style="color: var(--accent-gold);">Admin</a>
             </div>
             <div class="nav-toggle" id="nav-toggle">
                 <span class="bar"></span>
@@ -487,7 +531,7 @@
                 <div class="footer-section">
                     <h4>Company</h4>
                     <ul>
-                        <li><a href="index.html">Main Website</a></li>
+                        <li><a href="/">Main Website</a></li>
                         <li><a href="#about">About Ventures</a></li>
                         <li><a href="#case-studies">Case Studies</a></li>
                         <li><a href="#careers">Careers</a></li>

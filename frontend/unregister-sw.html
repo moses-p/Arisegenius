@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unregister Service Worker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #d78a00;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #b87500;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        .error {
+            background: #ffebee;
+            color: #c62828;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Unregister Service Worker</h1>
+        <p>Click the button below to unregister all service workers. Then refresh your main page.</p>
+        <button onclick="unregisterSW()">Unregister All Service Workers</button>
+        <button onclick="checkSW()">Check Status</button>
+        <div id="status"></div>
+    </div>
+
+    <script>
+        async function unregisterSW() {
+            const statusDiv = document.getElementById('status');
+            statusDiv.className = 'status';
+            statusDiv.textContent = 'Unregistering service workers...';
+            
+            try {
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    
+                    if (registrations.length === 0) {
+                        statusDiv.textContent = '✅ No service workers found.';
+                        return;
+                    }
+                    
+                    await Promise.all(
+                        registrations.map(reg => reg.unregister())
+                    );
+                    
+                    statusDiv.textContent = `✅ Successfully unregistered ${registrations.length} service worker(s). Now refresh your main page!`;
+                } else {
+                    statusDiv.textContent = 'Service workers are not supported in this browser.';
+                }
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.textContent = '❌ Error: ' + error.message;
+            }
+        }
+        
+        async function checkSW() {
+            const statusDiv = document.getElementById('status');
+            statusDiv.className = 'status';
+            
+            try {
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    
+                    if (registrations.length === 0) {
+                        statusDiv.textContent = '✅ No service workers registered.';
+                    } else {
+                        statusDiv.textContent = `⚠️ Found ${registrations.length} service worker(s) registered.`;
+                    }
+                } else {
+                    statusDiv.textContent = 'Service workers are not supported.';
+                }
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.textContent = '❌ Error: ' + error.message;
+            }
+        }
+        
+        // Auto-check on load
+        checkSW();
+    </script>
+</body>
+</html>
+

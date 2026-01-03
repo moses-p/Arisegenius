@@ -165,7 +165,7 @@ export const updateOrderStatusSchema = Joi.object({
 // Payment schemas
 export const processPaymentSchema = Joi.object({
   orderId: Joi.string().uuid().required(),
-  method: Joi.string().valid('CREDIT_CARD', 'DEBIT_CARD', 'PAYPAL', 'MPESA', 'AIRTEL_MONEY', 'MTN_MOBILE_MONEY', 'BANK_TRANSFER', 'CASH_ON_DELIVERY').required(),
+  method: Joi.string().valid('CREDIT_CARD', 'DEBIT_CARD', 'PAYPAL', 'MPESA', 'AIRTEL_MONEY', 'MTN_MOBILE_MONEY', 'PESAPAL', 'BANK_TRANSFER', 'CASH_ON_DELIVERY').required(),
   amount: Joi.number().positive().required(),
   currency: Joi.string().length(3).default('USD'),
   paymentDetails: Joi.object().optional(),

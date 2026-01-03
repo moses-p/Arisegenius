@@ -1,0 +1,146 @@
+/* Responsive Utilities - Global Rules for All Screen Sizes */
+
+/* Prevent horizontal scrolling globally */
+* {
+    max-width: 100%;
+}
+
+html {
+    overflow-x: hidden;
+    width: 100%;
+}
+
+body {
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
+    position: relative;
+}
+
+/* Responsive Images */
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+}
+
+/* Responsive Videos */
+video {
+    max-width: 100%;
+    height: auto;
+    width: 100%;
+}
+
+/* Responsive Iframes */
+iframe,
+embed,
+object {
+    max-width: 100%;
+    width: 100%;
+}
+
+/* Responsive Tables */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 768px) {
+    table {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+    }
+    
+    thead, tbody, tr {
+        display: block;
+    }
+    
+    td, th {
+        display: block;
+        text-align: left;
+        padding: 10px;
+        border-bottom: 1px solid var(--border-gray);
+    }
+}
+
+/* Responsive Forms */
+input,
+textarea,
+select,
+button {
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* Responsive Flex Containers */
+.flex-container {
+    flex-wrap: wrap;
+}
+
+/* Responsive Grid Containers */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: clamp(15px, 3vw, 30px);
+}
+
+/* Responsive Text */
+h1, h2, h3, h4, h5, h6 {
+    word-wrap: break-word;
+    hyphens: auto;
+    line-height: 1.2;
+}
+
+p, span, a, li {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+/* Responsive Containers */
+.container-fluid {
+    width: 100%;
+    padding: var(--container-padding);
+    box-sizing: border-box;
+}
+
+/* Responsive Sections */
+section {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+    box-sizing: border-box;
+}
+
+/* Touch-friendly elements on mobile */
+@media (max-width: 768px) {
+    a, button, input[type="button"], input[type="submit"] {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    /* Larger tap targets for mobile */
+    .nav-link {
+        padding: 15px 20px;
+    }
+}
+
+/* Print styles */
+@media print {
+    * {
+        background: white !important;
+        color: black !important;
+    }
+    
+    .navbar,
+    .nav-toggle,
+    .btn-primary,
+    .btn-secondary {
+        display: none !important;
+    }
+}
+

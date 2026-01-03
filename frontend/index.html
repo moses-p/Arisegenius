@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>Arisegenius - Leading African Tire Innovation</title>
     <meta name="description" content="Arisegenius - Africa's premier tire manufacturer. Premium quality tires for passenger cars, performance vehicles, trucks, and commercial fleets. Innovation, safety, and durability.">
     <meta name="keywords" content="African tires, best car tires, durable tires, performance tires, commercial tires, tire manufacturer Africa">
@@ -12,6 +12,94 @@
     <meta property="og:description" content="Premium quality tires for all vehicles. Innovation, safety, and durability from Africa's leading tire manufacturer.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://arisegenius.com">
+    <meta property="og:image" content="https://arisegenius.com/og-home.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Arisegenius - Leading African Tire Innovation">
+    <meta property="og:site_name" content="Arisegenius">
+    <meta property="og:locale" content="en_US">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Arisegenius - Leading African Tire Innovation">
+    <meta name="twitter:description" content="Premium quality tires for all vehicles. Innovation, safety, and durability from Africa's leading tire manufacturer.">
+    <meta name="twitter:image" content="https://arisegenius.com/android-chrome-512x512.png">
+    <meta name="twitter:image:alt" content="Arisegenius - Leading African Tire Innovation">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://arisegenius.com">
+    
+    <!-- Robots Meta -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="googlebot" content="index, follow">
+    <meta name="bingbot" content="index, follow">
+    
+    <!-- Author and Copyright -->
+    <meta name="author" content="Arisegenius">
+    <meta name="copyright" content="Arisegenius">
+    <meta name="language" content="English">
+    <meta name="geo.region" content="AF">
+    <meta name="geo.placename" content="Africa">
+    
+    <!-- Structured Data - Organization -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Arisegenius",
+      "url": "https://arisegenius.com",
+      "logo": "https://arisegenius.com/android-chrome-512x512.png",
+      "description": "Africa's premier tire manufacturer. Premium quality tires for passenger cars, performance vehicles, trucks, and commercial fleets.",
+      "foundingDate": "2020",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "AF"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "Customer Service",
+        "areaServed": "AF",
+        "availableLanguage": ["en"]
+      },
+      "sameAs": [
+        "https://www.facebook.com/arisegenius",
+        "https://www.twitter.com/arisegenius",
+        "https://www.linkedin.com/company/arisegenius",
+        "https://www.instagram.com/arisegenius"
+      ]
+    }
+    </script>
+    
+    <!-- Structured Data - Website -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Arisegenius",
+      "url": "https://arisegenius.com",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://arisegenius.com/products?search={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+    
+    <!-- Structured Data - Breadcrumb for Homepage -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://arisegenius.com"
+        }
+      ]
+    }
+    </script>
     
     <!-- Favicon and Icons -->
     <link rel="icon" type="image/x-icon" href="favicon.ico">
@@ -32,24 +120,116 @@
     <!-- Permissions Policy -->
     <meta http-equiv="Permissions-Policy" content="unload=(self)">
     
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Preconnect to external domains for faster loading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     
-    <!-- CSS -->
-    <link rel="stylesheet" href="styles.css">
+    <!-- Fonts with optimized loading -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
     
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Critical CSS inline or preload -->
+    <link rel="preload" href="styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="stylesheet" href="responsive-utilities.css">
+    <noscript><link rel="stylesheet" href="styles.css"></noscript>
+    
+    <!-- Mobile News Grid Fix - Force 3 Columns -->
+    <style>
+        /* Mobile: Force 3-column layout for news grid */
+        @media screen and (max-width: 768px) {
+            /* Target all possible selectors */
+            #news .container .news-grid,
+            section#news .container .news-grid,
+            .news .container .news-grid,
+            #news .news-grid,
+            section#news .news-grid,
+            .news .news-grid,
+            div.news-grid {
+                display: grid !important;
+                grid-template-columns: repeat(3, 1fr) !important;
+                gap: 5px !important;
+                width: 100% !important;
+                min-width: 0 !important;
+                max-width: 100% !important;
+                margin: 0 !important;
+            }
+            
+            /* Force cards to fit in 3 columns */
+            #news .container .news-card,
+            section#news .container .news-card,
+            .news .container .news-card,
+            #news .news-card,
+            section#news .news-card,
+            .news .news-card,
+            article.news-card {
+                min-width: 0 !important;
+                max-width: 100% !important;
+                width: 100% !important;
+                padding: 0.7rem !important;
+                box-sizing: border-box !important;
+                overflow: hidden !important;
+                margin: 0 !important;
+            }
+            
+            /* Reduce container padding */
+            #news .container,
+            section#news .container,
+            .news .container {
+                padding-left: 5px !important;
+                padding-right: 5px !important;
+                max-width: 100% !important;
+            }
+            
+            /* Reduce font sizes for better fit */
+            #news .news-card h3,
+            section#news .news-card h3,
+            .news .news-card h3 {
+                font-size: 0.85rem !important;
+                line-height: 1.2 !important;
+                margin-bottom: 0.5rem !important;
+            }
+            
+            #news .news-card p,
+            section#news .news-card p,
+            .news .news-card p {
+                font-size: 0.75rem !important;
+                line-height: 1.3 !important;
+                margin-bottom: 0.5rem !important;
+            }
+        }
+        
+        /* Very small phones */
+        @media screen and (max-width: 480px) {
+            #news .news-grid,
+            section#news .news-grid,
+            .news .news-grid {
+                gap: 4px !important;
+            }
+            
+            #news .news-card,
+            section#news .news-card,
+            .news .news-card {
+                padding: 0.6rem !important;
+            }
+        }
+    </style>
+    
+    <!-- Font Awesome for icons - load asynchronously -->
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
 </head>
 <body>
     <!-- Navigation -->
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <div class="nav-logo">
-                <h1>ARISEGENIUS</h1>
+                <a href="/" style="text-decoration: none; color: inherit; display: flex; align-items: center;">
+                    <img src="android-chrome-512x512.png" alt="Arisegenius Logo" class="nav-logo-img">
+                </a>
             </div>
             <div class="nav-menu" id="nav-menu">
-                <a href="index.html" class="nav-link">Home</a>
+                <a href="/" class="nav-link">Home</a>
                 <a href="about.html" class="nav-link">About</a>
                 <div class="nav-dropdown">
                     <a href="products.html" class="nav-link">Products <i class="fas fa-chevron-down"></i></a>
@@ -64,7 +244,9 @@
                 <a href="sustainability.html" class="nav-link">Sustainability</a>
                 <a href="news.html" class="nav-link">News</a>
                 <a href="contact.html" class="nav-link">Contact</a>
+                <a href="payment.html" class="nav-link">Payment</a>
                 <a href="ventures.html" class="nav-link ventures-link">More Ventures</a>
+                <a href="admin.html" class="nav-link" style="color: var(--accent-gold);">Admin</a>
             </div>
             <div class="nav-toggle" id="nav-toggle">
                 <span class="bar"></span>
@@ -77,7 +259,7 @@
     <!-- Hero Section -->
     <section id="home" class="hero">
         <div class="hero-video">
-            <video autoplay muted loop playsinline>
+            <video id="hero-video" autoplay muted loop playsinline preload="auto">
                 <source src="assets/videos/tire-spinning.mp4" type="video/mp4">
                 <!-- Fallback image if video doesn't load -->
                 <div class="hero-fallback"></div>
@@ -87,10 +269,16 @@
             <div class="hero-text">
                 <h1 class="hero-title">INNOVATION ON EVERY ROAD</h1>
                 <p class="hero-subtitle">Leading African tire technology that challenges global standards</p>
-                <button class="cta-button" onclick="scrollToTireFinder()">
-                    <span>Find Your Perfect Tire</span>
-                    <i class="fas fa-arrow-right"></i>
-                </button>
+                <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; margin-top: 30px;">
+                    <button class="cta-button" onclick="scrollToTireFinder()">
+                        <span>Find Your Perfect Tire</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button class="cta-button" onclick="window.location.href='payment.html'" style="background: var(--accent-gold); color: var(--primary-black);">
+                        <span>Make Payment</span>
+                        <i class="fas fa-credit-card"></i>
+                    </button>
+                </div>
             </div>
         </div>
         <div class="scroll-indicator">
@@ -230,7 +418,7 @@
             <div class="container">
                 <h2>Leading African Roads</h2>
                 <h3>Challenging the World</h3>
-                <p>From the bustling streets of Lagos to the challenging terrains of the Sahara, Arisegenius tires deliver uncompromising performance across Africa's diverse landscapes.</p>
+                <p>From the bustling streets of Kampala to the challenging terrains of the Sahara, Arisegenius tires deliver uncompromising performance across Africa's diverse landscapes.</p>
                 <div class="stats-grid">
                     <div class="stat-item">
                         <div class="stat-number">15+</div>
@@ -248,180 +436,6 @@
                         <div class="stat-number">24/7</div>
                         <div class="stat-label">Support</div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- About Section -->
-    <section id="about" class="about">
-        <div class="container">
-            <div class="section-header">
-                <h2>About Arisegenius</h2>
-                <p>We design and manufacture premium tires that are engineered for Africa’s roads yet benchmarked against global standards.</p>
-            </div>
-            <div class="about-grid">
-                <div class="about-card">
-                    <h3>Our Mission</h3>
-                    <p>To deliver innovative, durable and safe mobility solutions that empower drivers, fleets and economies across the continent.</p>
-                    <ul>
-                        <li>Cutting-edge R&D centers in Lagos and Nairobi</li>
-                        <li>ISO-certified manufacturing processes</li>
-                        <li>Proactive quality assurance at every stage</li>
-                    </ul>
-                </div>
-                <div class="about-card">
-                    <h3>What We Deliver</h3>
-                    <p>From precision-engineered passenger tires to high-load commercial solutions, our range covers every journey.</p>
-                    <ul>
-                        <li>Passenger, SUV and crossover fitments</li>
-                        <li>High-performance and motorsport programs</li>
-                        <li>Commercial, fleet and off-highway solutions</li>
-                    </ul>
-                </div>
-                <div class="about-card">
-                    <h3>Customer Promise</h3>
-                    <p>Every Arisegenius product carries comprehensive warranties, responsive support and a growing dealer network.</p>
-                    <ul>
-                        <li>Road hazard coverage in 15 markets</li>
-                        <li>24/7 multilingual technical support</li>
-                        <li>Authorized installers in major African cities</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Products Preview Section -->
-    <section id="products" class="products-preview">
-        <div class="container">
-            <div class="section-header">
-                <h2>Our Product Range</h2>
-                <p>Engineered for every driving condition and vehicle type</p>
-            </div>
-            
-            <div class="products-grid">
-                <div class="product-card" data-category="passenger">
-                    <div class="product-image">
-                        <div class="product-placeholder">
-                            <i class="fas fa-car"></i>
-                        </div>
-                    </div>
-                    <div class="product-content">
-                        <h3>Passenger Tires</h3>
-                        <p>Comfort, safety, and fuel efficiency for everyday driving</p>
-                        <a href="products.html#passenger" class="product-link">Explore Range <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </div>
-                
-                <div class="product-card" data-category="performance">
-                    <div class="product-image">
-                        <div class="product-placeholder">
-                            <i class="fas fa-tachometer-alt"></i>
-                        </div>
-                    </div>
-                    <div class="product-content">
-                        <h3>Performance Tires</h3>
-                        <p>High-speed stability and precision handling for sports cars</p>
-                        <a href="products.html#performance" class="product-link">Explore Range <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </div>
-                
-                <div class="product-card" data-category="truck">
-                    <div class="product-image">
-                        <div class="product-placeholder">
-                            <i class="fas fa-truck"></i>
-                        </div>
-                    </div>
-                    <div class="product-content">
-                        <h3>Truck & Bus</h3>
-                        <p>Heavy-duty reliability for commercial and fleet vehicles</p>
-                        <a href="products.html#truck" class="product-link">Explore Range <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </div>
-                
-                <div class="product-card" data-category="offroad">
-                    <div class="product-image">
-                        <div class="product-placeholder">
-                            <i class="fas fa-mountain"></i>
-                        </div>
-                    </div>
-                    <div class="product-content">
-                        <h3>Off-Road</h3>
-                        <p>Maximum traction and durability for challenging terrains</p>
-                        <a href="products.html#offroad" class="product-link">Explore Range <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Technology Section -->
-    <section id="technology" class="technology">
-        <div class="container">
-            <div class="section-header">
-                <h2>Innovation & Technology</h2>
-                <p>Cutting-edge technology meets African engineering excellence</p>
-            </div>
-            
-            <div class="tech-grid">
-                <div class="tech-item">
-                    <div class="tech-icon">
-                        <i class="fas fa-cogs"></i>
-                    </div>
-                    <h3>Advanced Manufacturing</h3>
-                    <p>State-of-the-art production facilities with precision engineering and quality control systems.</p>
-                </div>
-                
-                <div class="tech-item">
-                    <div class="tech-icon">
-                        <i class="fas fa-shield-alt"></i>
-                    </div>
-                    <h3>Safety Testing</h3>
-                    <p>Rigorous testing protocols ensure every tire meets the highest safety standards.</p>
-                </div>
-                
-                <div class="tech-item">
-                    <div class="tech-icon">
-                        <i class="fas fa-leaf"></i>
-                    </div>
-                    <h3>Sustainable Materials</h3>
-                    <p>Eco-friendly manufacturing processes and recyclable materials for a greener future.</p>
-                </div>
-                
-                <div class="tech-item">
-                    <div class="tech-icon">
-                        <i class="fas fa-microscope"></i>
-                    </div>
-                    <h3>R&D Excellence</h3>
-                    <p>Continuous research and development to stay ahead of industry trends and challenges.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Sustainability Section -->
-    <section id="sustainability" class="sustainability">
-        <div class="container">
-            <div class="section-header">
-                <h2>Sustainability & Impact</h2>
-                <p>Responsible manufacturing practices that honor communities and protect the environment.</p>
-            </div>
-            <div class="sustainability-grid">
-                <div class="sustainability-card">
-                    <i class="fas fa-recycle"></i>
-                    <h3>Green Manufacturing</h3>
-                    <p>30% of our compounds use recycled or bio-based materials, reducing carbon emissions across the supply chain.</p>
-                </div>
-                <div class="sustainability-card">
-                    <i class="fas fa-solar-panel"></i>
-                    <h3>Renewable Energy</h3>
-                    <p>Solar micro-grids power core production lines, saving 1.2M kWh annually at our flagship plant.</p>
-                </div>
-                <div class="sustainability-card">
-                    <i class="fas fa-hands-helping"></i>
-                    <h3>Community Programs</h3>
-                    <p>Road safety clinics, technical scholarships, and dealer upskilling initiatives in 10 partner countries.</p>
                 </div>
             </div>
         </div>
@@ -637,5 +651,86 @@
 
     <!-- JavaScript -->
     <script src="script.js"></script>
+    <script>
+        // Ensure hero video plays
+        document.addEventListener('DOMContentLoaded', function() {
+            const heroVideo = document.getElementById('hero-video');
+            if (heroVideo) {
+                // Force play the video
+                heroVideo.play().catch(function(error) {
+                    console.log('Video autoplay prevented:', error);
+                    // Try to play again on user interaction
+                    document.addEventListener('click', function playVideoOnce() {
+                        heroVideo.play();
+                        document.removeEventListener('click', playVideoOnce);
+                    }, { once: true });
+                });
+                
+                // Ensure video loops properly
+                heroVideo.addEventListener('ended', function() {
+                    heroVideo.currentTime = 0;
+                    heroVideo.play();
+                });
+                
+                // Restart if paused (browser might pause it)
+                heroVideo.addEventListener('pause', function() {
+                    if (!heroVideo.ended && document.visibilityState === 'visible') {
+                        heroVideo.play();
+                    }
+                });
+            }
+        });
+        
+        // Force Mobile News Grid 3-Column Layout
+        (function() {
+            function forceNewsGridLayout() {
+                if (window.innerWidth <= 768) {
+                    const newsGrid = document.querySelector('#news .news-grid') || 
+                                   document.querySelector('section#news .news-grid') ||
+                                   document.querySelector('.news .news-grid');
+                    
+                    if (newsGrid) {
+                        newsGrid.style.display = 'grid';
+                        newsGrid.style.gridTemplateColumns = 'repeat(3, 1fr)';
+                        newsGrid.style.gap = '5px';
+                        newsGrid.style.width = '100%';
+                        newsGrid.style.minWidth = '0';
+                        newsGrid.style.maxWidth = '100%';
+                        
+                        // Force cards to fit
+                        const cards = newsGrid.querySelectorAll('.news-card');
+                        cards.forEach(function(card) {
+                            card.style.minWidth = '0';
+                            card.style.maxWidth = '100%';
+                            card.style.width = '100%';
+                            card.style.padding = '0.7rem';
+                            card.style.boxSizing = 'border-box';
+                        });
+                        
+                        // Adjust container padding
+                        const container = newsGrid.closest('.container');
+                        if (container) {
+                            container.style.paddingLeft = '5px';
+                            container.style.paddingRight = '5px';
+                        }
+                    }
+                }
+            }
+            
+            // Run on load
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', forceNewsGridLayout);
+            } else {
+                forceNewsGridLayout();
+            }
+            
+            // Run on resize
+            window.addEventListener('resize', forceNewsGridLayout);
+            
+            // Run after delays to ensure styles are loaded
+            setTimeout(forceNewsGridLayout, 100);
+            setTimeout(forceNewsGridLayout, 500);
+        })();
+    </script>
 </body>
 </html>

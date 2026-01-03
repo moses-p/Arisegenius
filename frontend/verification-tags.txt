@@ -1,0 +1,12 @@
+<!-- 
+    Add these meta tags to your index.html <head> section
+    after you get verification codes from Google and Bing
+-->
+
+<!-- Google Search Console Verification -->
+<!-- Replace YOUR_GOOGLE_VERIFICATION_CODE with code from Search Console -->
+<meta name="google-site-verification" content="YOUR_GOOGLE_VERIFICATION_CODE" />
+
+<!-- Bing Webmaster Tools Verification -->
+<!-- Replace YOUR_BING_VERIFICATION_CODE with code from Bing Webmaster Tools -->
+<meta name="msvalidate.01" content="YOUR_BING_VERIFICATION_CODE" />

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" itemscope itemtype="https://schema.org/WebPage">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>Secure Payment - Arisegenius</title>
     <meta name="description" content="Secure payment options for Arisegenius tires. Pay with Mobile Money, PayPal, or credit cards. Trusted payment processing across Africa.">
     <meta name="keywords" content="mobile money payment, PayPal, credit card, secure payment, African payment methods">
@@ -12,6 +12,47 @@
     <meta property="og:description" content="Multiple secure payment options for your Arisegenius tire purchase.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://arisegenius.com/payment">
+    <meta property="og:image" content="https://arisegenius.com/og-payment.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Arisegenius Secure Payment">
+    <meta property="og:site_name" content="Arisegenius">
+    <meta property="og:locale" content="en_US">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Secure Payment - Arisegenius">
+    <meta name="twitter:description" content="Multiple secure payment options for your Arisegenius tire purchase.">
+    <meta name="twitter:image" content="https://arisegenius.com/android-chrome-512x512.png">
+    <meta name="twitter:image:alt" content="Arisegenius Secure Payment">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://arisegenius.com/payment">
+    
+    <!-- Robots Meta -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    
+    <!-- Structured Data - Breadcrumb -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://arisegenius.com"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Payment",
+          "item": "https://arisegenius.com/payment"
+        }
+      ]
+    }
+    </script>
     
     <!-- Favicon and Icons -->
     <link rel="icon" type="image/x-icon" href="favicon.ico">
@@ -29,34 +70,49 @@
     <meta name="msapplication-TileColor" content="#090101">
     <meta name="msapplication-config" content="browserconfig.xml">
     
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Preconnect to external domains for faster loading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     
-    <!-- CSS -->
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="payment.css">
+    <!-- Fonts with optimized loading -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
     
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Critical CSS preload -->
+    <link rel="preload" href="styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="payment.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="stylesheet" href="responsive-utilities.css">
+    <noscript>
+        <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="payment.css">
+        <link rel="stylesheet" href="responsive-utilities.css">
+    </noscript>
+    
+    <!-- Font Awesome for icons - load asynchronously -->
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
 </head>
 <body>
     <!-- Navigation -->
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <div class="nav-logo">
-                <a href="index.html">
-                    <h1>ARISEGENIUS</h1>
+                <a href="/" style="text-decoration: none; color: inherit; display: flex; align-items: center;">
+                    <img src="android-chrome-512x512.png" alt="Arisegenius Logo" class="nav-logo-img">
                 </a>
             </div>
             <div class="nav-menu" id="nav-menu">
-                <a href="index.html" class="nav-link">Home</a>
-                <a href="index.html#about" class="nav-link">About</a>
+                <a href="/" class="nav-link">Home</a>
+                <a href="/#about" class="nav-link">About</a>
                 <a href="products.html" class="nav-link">Products</a>
-                <a href="index.html#technology" class="nav-link">Technology</a>
-                <a href="index.html#sustainability" class="nav-link">Sustainability</a>
-                <a href="index.html#news" class="nav-link">News</a>
-                <a href="index.html#contact" class="nav-link">Contact</a>
+                <a href="/#technology" class="nav-link">Technology</a>
+                <a href="/#sustainability" class="nav-link">Sustainability</a>
+                <a href="/#news" class="nav-link">News</a>
+                <a href="/#contact" class="nav-link">Contact</a>
+                <a href="payment.html" class="nav-link active">Payment</a>
                 <a href="ventures.html" class="nav-link ventures-link">More Ventures</a>
+                <a href="admin.html" class="nav-link" style="color: var(--accent-gold);">Admin</a>
             </div>
             <div class="nav-toggle" id="nav-toggle">
                 <span class="bar"></span>
@@ -191,6 +247,57 @@
                                     </div>
                                     <button class="select-mobile" data-provider="mtn">Select</button>
                                 </div>
+                                
+                                <div class="mobile-option">
+                                    <div class="mobile-logo">
+                                        <i class="fas fa-mobile-alt"></i>
+                                    </div>
+                                    <div class="mobile-info">
+                                        <h4>Pesapal</h4>
+                                        <p>Kenya, Uganda, Tanzania, Rwanda</p>
+                                    </div>
+                                    <button class="select-mobile" data-provider="pesapal">Select</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Pesapal -->
+                    <div class="payment-option" data-method="pesapal">
+                        <div class="payment-header">
+                            <div class="payment-icon">
+                                <i class="fas fa-wallet"></i>
+                            </div>
+                            <div class="payment-info">
+                                <h3>Pesapal</h3>
+                                <p>Pay securely with Pesapal - Multiple payment options in one place</p>
+                            </div>
+                            <div class="payment-radio">
+                                <input type="radio" name="payment-method" value="pesapal" id="pesapal">
+                                <label for="pesapal"></label>
+                            </div>
+                        </div>
+                        
+                        <div class="payment-details" id="pesapal-details">
+                            <div class="paypal-info">
+                                <div class="paypal-logo">
+                                    <i class="fas fa-wallet"></i>
+                                </div>
+                                <p>You will be redirected to Pesapal to complete your payment securely. Pesapal supports multiple payment methods including mobile money, credit cards, and bank transfers.</p>
+                                <div class="paypal-features">
+                                    <div class="feature">
+                                        <i class="fas fa-check"></i>
+                                        <span>Multiple Payment Options</span>
+                                    </div>
+                                    <div class="feature">
+                                        <i class="fas fa-check"></i>
+                                        <span>Secure & Fast</span>
+                                    </div>
+                                    <div class="feature">
+                                        <i class="fas fa-check"></i>
+                                        <span>Widely Accepted in East Africa</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -286,6 +393,46 @@
                             </form>
                         </div>
                     </div>
+                    
+                    <!-- Bank Transfer -->
+                    <div class="payment-option" data-method="bank-transfer">
+                        <div class="payment-header">
+                            <div class="payment-icon">
+                                <i class="fas fa-university"></i>
+                            </div>
+                            <div class="payment-info">
+                                <h3>Bank Transfer</h3>
+                                <p>Transfer funds directly to our bank account</p>
+                            </div>
+                            <div class="payment-radio">
+                                <input type="radio" name="payment-method" value="bank-transfer" id="bank-transfer">
+                                <label for="bank-transfer"></label>
+                            </div>
+                        </div>
+                        
+                        <div class="payment-details" id="bank-transfer-details">
+                            <div class="bank-transfer-info">
+                                <div class="bank-logo">
+                                    <i class="fas fa-university"></i>
+                                </div>
+                                <p>You will receive bank account details and payment instructions after confirming your order. Please complete the transfer within 24 hours and upload proof of payment.</p>
+                                <div class="paypal-features">
+                                    <div class="feature">
+                                        <i class="fas fa-check"></i>
+                                        <span>Secure Bank Transfer</span>
+                                    </div>
+                                    <div class="feature">
+                                        <i class="fas fa-check"></i>
+                                        <span>1-3 Business Days Processing</span>
+                                    </div>
+                                    <div class="feature">
+                                        <i class="fas fa-check"></i>
+                                        <span>Order Confirmed After Verification</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="payment-actions">
@@ -367,7 +514,7 @@
                         <i class="fas fa-truck"></i>
                         Track Order
                     </button>
-                    <button class="btn-secondary" onclick="window.location.href='index.html'">
+                    <button class="btn-secondary" onclick="window.location.href='/'">
                         <i class="fas fa-home"></i>
                         Back to Home
                     </button>
@@ -404,17 +551,17 @@
                 <div class="footer-section">
                     <h4>Company</h4>
                     <ul>
-                        <li><a href="index.html#about">About Us</a></li>
-                        <li><a href="index.html#technology">Technology</a></li>
-                        <li><a href="index.html#sustainability">Sustainability</a></li>
-                        <li><a href="index.html#news">News & Media</a></li>
+                        <li><a href="/#about">About Us</a></li>
+                        <li><a href="/#technology">Technology</a></li>
+                        <li><a href="/#sustainability">Sustainability</a></li>
+                        <li><a href="/#news">News & Media</a></li>
                     </ul>
                 </div>
                 
                 <div class="footer-section">
                     <h4>Support</h4>
                     <ul>
-                        <li><a href="index.html#contact">Contact Us</a></li>
+                        <li><a href="/#contact">Contact Us</a></li>
                         <li><a href="#dealer">Find a Dealer</a></li>
                         <li><a href="#warranty">Warranty</a></li>
                         <li><a href="#support">Customer Support</a></li>
