@@ -318,7 +318,8 @@ Your order will be processed and shipped within 3-5 business days.
 
 For support, contact us at:
 Email: support@arisegenius.com
-Phone: +234-xxx-xxxx
+MTN Mobile Money: +256 775 538 145
+Airtel Money: +256 743 232 445
 
 ARISEGENIUS - Leading African Tire Innovation
     `;

@@ -204,34 +204,59 @@ export class EmailService {
   private transporter: nodemailer.Transporter;
 
   constructor() {
-    this.transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: parseInt(process.env.SMTP_PORT || '587'),
-      secure: process.env.SMTP_PORT === '465',
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-    });
+    // Only create transporter if SMTP credentials are provided
+    if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
+      this.transporter = nodemailer.createTransport({
+        host: process.env.SMTP_HOST,
+        port: parseInt(process.env.SMTP_PORT || '587'),
+        secure: process.env.SMTP_PORT === '465',
+        auth: {
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASS,
+        },
+      });
+    } else {
+      // Create a mock transporter for development when SMTP is not configured
+      this.transporter = nodemailer.createTransport({
+        host: 'localhost',
+        port: 587,
+        secure: false,
+        auth: {
+          user: 'dev',
+          pass: 'dev',
+        },
+        // Mock transport for development
+        tls: {
+          rejectUnauthorized: false,
+        },
+      });
+    }
   }
 
   /**
    * Send email verification
    */
   async sendVerificationEmail(email: string, token: string): Promise<void> {
+    // Skip sending if SMTP is not configured
+    if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASS) {
+      console.log(`⚠️ Email sending disabled: Verification email would be sent to ${email}`);
+      console.log(`   Verification token: ${token}`);
+      return;
+    }
+
     try {
       const template = EMAIL_TEMPLATES.verification;
       
       await this.transporter.sendMail({
-        from: process.env.FROM_EMAIL,
+        from: process.env.FROM_EMAIL || process.env.SMTP_USER,
         to: email,
         subject: template.subject,
         html: template.html(token),
       });
 
-      console.log(`Verification email sent to ${email}`);
+      console.log(`✅ Verification email sent to ${email}`);
     } catch (error) {
-      console.error('Failed to send verification email:', error);
+      console.error('❌ Failed to send verification email:', error);
       throw error;
     }
   }
@@ -240,19 +265,25 @@ export class EmailService {
    * Send password reset email
    */
   async sendPasswordResetEmail(email: string, token: string): Promise<void> {
+    if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASS) {
+      console.log(`⚠️ Email sending disabled: Password reset email would be sent to ${email}`);
+      console.log(`   Reset token: ${token}`);
+      return;
+    }
+
     try {
       const template = EMAIL_TEMPLATES.passwordReset;
       
       await this.transporter.sendMail({
-        from: process.env.FROM_EMAIL,
+        from: process.env.FROM_EMAIL || process.env.SMTP_USER,
         to: email,
         subject: template.subject,
         html: template.html(token),
       });
 
-      console.log(`Password reset email sent to ${email}`);
+      console.log(`✅ Password reset email sent to ${email}`);
     } catch (error) {
-      console.error('Failed to send password reset email:', error);
+      console.error('❌ Failed to send password reset email:', error);
       throw error;
     }
   }
@@ -261,6 +292,11 @@ export class EmailService {
    * Send order confirmation email
    */
   async sendOrderConfirmationEmail(orderId: string): Promise<void> {
+    if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASS) {
+      console.log(`⚠️ Email sending disabled: Order confirmation email would be sent for order ${orderId}`);
+      return;
+    }
+
     try {
       const order = await prisma.order.findUnique({
         where: { id: orderId },
@@ -281,15 +317,15 @@ export class EmailService {
       const template = EMAIL_TEMPLATES.orderConfirmation;
       
       await this.transporter.sendMail({
-        from: process.env.FROM_EMAIL,
+        from: process.env.FROM_EMAIL || process.env.SMTP_USER,
         to: order.user.email,
         subject: template.subject,
         html: template.html(order),
       });
 
-      console.log(`Order confirmation email sent to ${order.user.email}`);
+      console.log(`✅ Order confirmation email sent to ${order.user.email}`);
     } catch (error) {
-      console.error('Failed to send order confirmation email:', error);
+      console.error('❌ Failed to send order confirmation email:', error);
       throw error;
     }
   }
@@ -298,6 +334,11 @@ export class EmailService {
    * Send dealer approval email
    */
   async sendDealerApprovalEmail(dealerId: string): Promise<void> {
+    if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASS) {
+      console.log(`⚠️ Email sending disabled: Dealer approval email would be sent for dealer ${dealerId}`);
+      return;
+    }
+
     try {
       const dealer = await prisma.dealerProfile.findUnique({
         where: { id: dealerId },
@@ -313,15 +354,15 @@ export class EmailService {
       const template = EMAIL_TEMPLATES.dealerApproval;
       
       await this.transporter.sendMail({
-        from: process.env.FROM_EMAIL,
+        from: process.env.FROM_EMAIL || process.env.SMTP_USER,
         to: dealer.user.email,
         subject: template.subject,
         html: template.html(dealer),
       });
 
-      console.log(`Dealer approval email sent to ${dealer.user.email}`);
+      console.log(`✅ Dealer approval email sent to ${dealer.user.email}`);
     } catch (error) {
-      console.error('Failed to send dealer approval email:', error);
+      console.error('❌ Failed to send dealer approval email:', error);
       throw error;
     }
   }
@@ -335,18 +376,24 @@ export class EmailService {
     html: string,
     text?: string
   ): Promise<void> {
+    if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASS) {
+      console.log(`⚠️ Email sending disabled: Custom email would be sent to ${to}`);
+      console.log(`   Subject: ${subject}`);
+      return;
+    }
+
     try {
       await this.transporter.sendMail({
-        from: process.env.FROM_EMAIL,
+        from: process.env.FROM_EMAIL || process.env.SMTP_USER,
         to,
         subject,
         html,
         text,
       });
 
-      console.log(`Custom email sent to ${to}`);
+      console.log(`✅ Custom email sent to ${to}`);
     } catch (error) {
-      console.error('Failed to send custom email:', error);
+      console.error('❌ Failed to send custom email:', error);
       throw error;
     }
   }
@@ -377,12 +424,20 @@ export class EmailService {
    * Test email configuration
    */
   async testConnection(): Promise<boolean> {
+    // Skip verification if SMTP is not configured (development mode)
+    if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASS) {
+      console.log('⚠️ Email service initialized but SMTP not configured (development mode)');
+      console.log('   Email sending will be disabled. Configure SMTP settings in .env to enable.');
+      return false;
+    }
+
     try {
       await this.transporter.verify();
       console.log('✅ Email service connection verified');
       return true;
-    } catch (error) {
-      console.error('❌ Email service connection failed:', error);
+    } catch (error: any) {
+      console.error('❌ Email service connection failed:', error.message || error);
+      console.log('   Email sending will be disabled until SMTP is properly configured.');
       return false;
     }
   }
