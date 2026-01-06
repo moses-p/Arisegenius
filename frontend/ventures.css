@@ -484,6 +484,70 @@
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
+/* Responsive Layout Fixes for Ventures Page */
+
+@media (max-width: 1024px) {
+    .ventures-hero {
+        height: auto;
+        padding: 140px 0 80px;
+    }
+
+    .ventures-grid {
+        gap: 40px;
+    }
+}
+
+@media (max-width: 768px) {
+    .ventures-hero {
+        height: auto;
+        padding: 130px 0 70px;
+    }
+
+    .hero-visual {
+        display: none;
+    }
+
+    .hero-stats {
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .venture-card {
+        padding: 28px 24px;
+    }
+
+    .case-studies-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .advantages-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .contact-content {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .contact-form-container {
+        padding: 28px 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .ventures-hero {
+        padding: 120px 0 60px;
+    }
+
+    .venture-card {
+        padding: 24px 20px;
+    }
+
+    .contact-form-container {
+        padding: 24px 20px;
+    }
+}
+
 .contact-form h3 {
     font-size: 1.8rem;
     font-weight: var(--font-weight-bold);

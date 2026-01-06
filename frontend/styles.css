@@ -61,6 +61,31 @@ img {
     -webkit-backface-visibility: hidden;
     transform: translateZ(0);
     will-change: auto;
+    /* Prevent image flickering */
+    -webkit-transform: translateZ(0);
+    -moz-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    -o-transform: translateZ(0);
+    transform: translate3d(0, 0, 0);
+    /* Prevent image reloading */
+    content-visibility: auto;
+    /* Smooth image loading */
+    transition: opacity 0.3s ease-in-out;
+    opacity: 1;
+}
+
+/* Prevent images from flickering during load */
+img[loading="lazy"] {
+    opacity: 1;
+    transition: none;
+}
+
+img:not([src]) {
+    opacity: 0;
+}
+
+img[src]:not([src=""]) {
+    opacity: 1;
 }
 
 video {
@@ -1195,7 +1220,6 @@ video {
     .container {
         padding: 0 15px;
     }
-
     .nav-container {
         padding: 0 15px;
         height: 60px;

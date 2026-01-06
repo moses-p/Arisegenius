@@ -479,6 +479,73 @@
     color: var(--primary-black);
 }
 
+/* Responsive Layout Fixes for Payment Page */
+
+@media (max-width: 900px) {
+    .summary-content {
+        padding: 0 16px;
+    }
+
+    .payment-content {
+        padding: 0 16px;
+    }
+}
+
+@media (max-width: 768px) {
+    .order-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .item-price {
+        align-self: flex-end;
+    }
+
+    .payment-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .payment-icon {
+        margin-right: 0;
+        margin-bottom: 12px;
+    }
+
+    .payment-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .payment-actions .btn-primary,
+    .payment-actions .btn-secondary {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .payment-hero {
+        padding: 110px 0 60px;
+    }
+
+    .order-item {
+        padding: 16px;
+    }
+
+    .payment-header {
+        padding: 20px;
+    }
+
+    .payment-details.active {
+        padding: 20px;
+    }
+}
+
 /* Payment Processing */
 .payment-processing {
     padding: 100px 0;

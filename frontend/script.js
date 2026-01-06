@@ -664,10 +664,22 @@ class LazyLoader {
                     
                     // Prevent reloading if image is already loaded
                     if (dataSrc && !this.loadedImages.has(dataSrc) && !img.src) {
-                        img.src = dataSrc;
-                        this.loadedImages.add(dataSrc);
-                        img.classList.remove('lazy');
-                        this.imageObserver.unobserve(img);
+                        // Preload image to prevent flickering
+                        const imageLoader = new Image();
+                        imageLoader.onload = () => {
+                            img.src = dataSrc;
+                            img.classList.add('loaded');
+                            img.classList.remove('lazy');
+                            this.loadedImages.add(dataSrc);
+                            this.imageObserver.unobserve(img);
+                        };
+                        imageLoader.onerror = () => {
+                            // If image fails to load, still set src to prevent retries
+                            img.src = dataSrc;
+                            this.loadedImages.add(dataSrc);
+                            this.imageObserver.unobserve(img);
+                        };
+                        imageLoader.src = dataSrc;
                     } else if (img.src) {
                         // Image already has src, just unobserve
                         this.imageObserver.unobserve(img);
@@ -675,7 +687,7 @@ class LazyLoader {
                 }
             });
         }, {
-            rootMargin: '50px' // Start loading slightly before image enters viewport
+            rootMargin: '100px' // Start loading earlier to prevent flickering
         });
         
         this.init();

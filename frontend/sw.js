@@ -1,6 +1,6 @@
 // Service Worker for Arisegenius - Offline Support and Caching
-const CACHE_NAME = 'arisegenius-v3'; // Updated version to force refresh
-const RUNTIME_CACHE = 'arisegenius-runtime-v3';
+const CACHE_NAME = 'arisegenius-v4'; // Updated version to force refresh and fix image blinking
+const RUNTIME_CACHE = 'arisegenius-runtime-v4';
 
 // Assets to cache immediately
 const STATIC_ASSETS = [
@@ -76,71 +76,74 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  event.respondWith(
-    caches.match(event.request)
-      .then((cachedResponse) => {
-        // Return cached version if available
-        if (cachedResponse) {
-          return cachedResponse;
-        }
-
-        // Otherwise fetch from network
-        return fetch(event.request)
-          .then((response) => {
-            // Don't cache if not a valid response
-            if (!response || response.status !== 200 || response.type !== 'basic') {
-              return response;
-            }
-
-            // Don't cache large files (over 5MB)
-            const contentLength = response.headers.get('content-length');
-            if (contentLength && parseInt(contentLength) > 5 * 1024 * 1024) {
-              return response; // Return without caching
-            }
-
-            // Clone the response
-            const responseToCache = response.clone();
-
-            // Cache the response
-            caches.open(RUNTIME_CACHE)
-              .then((cache) => {
-                cache.put(event.request, responseToCache);
-              })
-              .catch((error) => {
-                console.log('Service Worker: Cache put failed', error);
-              });
-
-            return response;
-          })
-          .catch((error) => {
-            console.log('Service Worker: Fetch failed', error);
-            // If network fails and it's a navigation request, return offline page
-            if (event.request.mode === 'navigate') {
-              const offlinePage = caches.match('/index.html');
-              if (offlinePage) {
-                return offlinePage;
+  // For images, use cache-first strategy to prevent flickering
+  const isImage = /\.(jpg|jpeg|png|gif|webp|svg|ico|bmp)$/i.test(url.pathname) ||
+                  event.request.headers.get('accept')?.includes('image/');
+  
+  if (isImage) {
+    event.respondWith(
+      caches.match(event.request)
+        .then((cachedResponse) => {
+          // Always return cached image if available to prevent flickering
+          if (cachedResponse) {
+            return cachedResponse;
+          }
+          
+          // If not cached, fetch and cache for next time
+          return fetch(event.request)
+            .then((response) => {
+              // Only cache successful image responses
+              if (response && response.status === 200 && response.type === 'basic') {
+                const responseToCache = response.clone();
+                caches.open(RUNTIME_CACHE)
+                  .then((cache) => {
+                    cache.put(event.request, responseToCache);
+                  })
+                  .catch(() => {
+                    // Silently fail cache put
+                  });
               }
-            }
-            // For other requests, return a proper error response
-            return new Response('Network error', {
-              status: 408,
-              statusText: 'Request Timeout',
-              headers: { 'Content-Type': 'text/plain' }
+              return response;
+            })
+            .catch(() => {
+              // Return a placeholder or let browser handle the error
+              return new Response('', { status: 404 });
             });
-          });
+        })
+    );
+    return;
+  }
+
+  // For other resources, use network-first strategy
+  event.respondWith(
+    fetch(event.request)
+      .then((response) => {
+        // Cache successful responses
+        if (response && response.status === 200 && response.type === 'basic') {
+          const responseToCache = response.clone();
+          caches.open(RUNTIME_CACHE)
+            .then((cache) => {
+              cache.put(event.request, responseToCache);
+            })
+            .catch(() => {
+              // Silently fail
+            });
+        }
+        return response;
       })
-      .catch((error) => {
-        console.log('Service Worker: Cache match failed', error);
-        // Fallback to network fetch - but don't intercept if it fails
-        return fetch(event.request).catch((fetchError) => {
-          console.log('Service Worker: Network fetch also failed', fetchError);
-          // Return a valid error response
-          return new Response('Service unavailable', {
-            status: 503,
-            statusText: 'Service Unavailable',
-            headers: { 'Content-Type': 'text/plain' }
+      .catch(() => {
+        // Fallback to cache if network fails
+        return caches.match(event.request)
+          .then((cachedResponse) => {
+            if (cachedResponse) {
+              return cachedResponse;
+            }
+            // If it's a navigation request and no cache, return offline page
+            if (event.request.mode === 'navigate') {
+              return caches.match('/index.html');
+            }
+            return new Response('Offline', { status: 503 });
           });
-        });
       })
   );
 });
